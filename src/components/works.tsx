@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import styles from "./works.module.css";
 
 const WORKS = [
@@ -127,18 +127,67 @@ function Motif({ kind }: { kind: string }) {
   }
 }
 
+function CardContent({ p }: { p: (typeof WORKS)[0] }) {
+  return (
+    <>
+      <span className={styles.tabLabel}>{p.cat} &middot; {p.year}</span>
+      <span className={styles.punch} />
+      <div className={styles.filedStripe}>
+        <span>FILE No. {p.n} / 06 &middot; ARCHIVE 2026</span>
+        <span className={styles.barcode}>
+          {[2, 1, 3, 1, 2, 1, 1, 2, 3, 1, 2].map((bw, k) => (
+            <i key={k} style={{ width: bw + "px" }} />
+          ))}
+        </span>
+      </div>
+      <span className={styles.corner}>REF &middot; {p.url}</span>
+      <div className={styles.left}>
+        <div>
+          <div className={styles.headRow}>
+            <span className={styles.headN}>&#9673; {p.n}</span>
+            <span>&middot;</span>
+            <span>{p.year}</span>
+          </div>
+          <div className={styles.name}>{p.name}</div>
+          <div className={styles.cat}>{p.cat}</div>
+        </div>
+        <div className={styles.footer}>
+          <div className={styles.url}>{p.url}</div>
+          <div className={styles.chips}>
+            {p.tech.map((t) => <span key={t}>{t}</span>)}
+          </div>
+        </div>
+      </div>
+      <div className={styles.right}>
+        <div className={styles.motif}>
+          <span className={`${styles.reg} ${styles.regTl}`}>+</span>
+          <span className={`${styles.reg} ${styles.regTr}`}>+</span>
+          <span className={`${styles.reg} ${styles.regBr}`}>+</span>
+          <Motif kind={p.motif} />
+        </div>
+        <div className={styles.row}><div className={styles.rowK}>Problem</div><div className={styles.rowV}>{p.problem}</div></div>
+        <div className={styles.row}><div className={styles.rowK}>Role</div><div className={styles.rowV}>{p.role}</div></div>
+        <div className={styles.row}><div className={styles.rowK}>Outcome</div><div className={styles.rowV}>{p.outcome}</div></div>
+      </div>
+      <span className={styles.stamp}>Shipped {p.year}</span>
+    </>
+  );
+}
+
 export default function Works() {
   const [active, setActive] = useState(0);
+  const [open, setOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [drag, setDrag] = useState(0);
   const total = WORKS.length;
   const containerRef = useRef<HTMLElement>(null);
-  const deckRef = useRef<HTMLDivElement>(null);
+  const peekRef = useRef<HTMLDivElement>(null);
   const dragState = useRef({ active: false, startX: 0, startY: 0, dx: 0, locked: null as string | null });
 
-  function step(dir: number) {
-    setActive((a) => Math.max(0, Math.min(total - 1, a + dir)));
-  }
+  const step = useCallback(
+    (dir: number) => setActive((a) => Math.max(0, Math.min(total - 1, a + dir))),
+    [total],
+  );
 
   useEffect(() => {
     const mq = window.matchMedia("(max-width: 900px)");
@@ -150,11 +199,17 @@ export default function Works() {
 
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
-      if (!containerRef.current) return;
-      const r = containerRef.current.getBoundingClientRect();
-      if (r.bottom < 0 || r.top > window.innerHeight) return;
-      if (e.key === "ArrowLeft") { step(-1); e.preventDefault(); }
-      if (e.key === "ArrowRight") { step(1); e.preventDefault(); }
+      if (open) {
+        if (e.key === "ArrowLeft") { step(-1); e.preventDefault(); }
+        if (e.key === "ArrowRight") { step(1); e.preventDefault(); }
+        if (e.key === "Escape") { setOpen(false); e.preventDefault(); }
+      } else {
+        if (!containerRef.current) return;
+        const r = containerRef.current.getBoundingClientRect();
+        if (r.bottom < 0 || r.top > window.innerHeight) return;
+        if (e.key === "ArrowLeft") { step(-1); e.preventDefault(); }
+        if (e.key === "ArrowRight") { step(1); e.preventDefault(); }
+      }
     }
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
@@ -162,9 +217,8 @@ export default function Works() {
 
   useEffect(() => {
     if (!isMobile) return;
-    const el = deckRef.current;
+    const el = peekRef.current;
     if (!el) return;
-
     function onStart(e: TouchEvent) {
       const t = e.touches[0];
       dragState.current = { active: true, startX: t.clientX, startY: t.clientY, dx: 0, locked: null };
@@ -199,7 +253,6 @@ export default function Works() {
       }
       setDrag(0);
     }
-
     el.addEventListener("touchstart", onStart, { passive: true });
     el.addEventListener("touchmove", onMove, { passive: false });
     el.addEventListener("touchend", onEnd);
@@ -211,6 +264,11 @@ export default function Works() {
       el.removeEventListener("touchcancel", onEnd);
     };
   }, [isMobile, total]);
+
+  useEffect(() => {
+    document.body.style.overflow = open ? "hidden" : "";
+    return () => { document.body.style.overflow = ""; };
+  }, [open]);
 
   const w = WORKS[active];
 
@@ -225,149 +283,149 @@ export default function Works() {
           <div className={`${styles.caption} reveal-fade`}>
             Six index cards<br />
             2022 &mdash; 2025<br />
-            Click a tab or arrow
+            Click a card to open
           </div>
         </div>
 
-        <div className={styles.tabs}>
-          {WORKS.map((p, i) => (
+        {/* ── Folder with peeking cards ── */}
+        <div className={styles.folder}>
+
+          {/* Cards peeking out of the folder */}
+          <div className={styles.peekStage}>
             <button
-              key={p.n}
-              className={`${styles.tab} ${i === active ? styles.tabActive : ""}`}
-              onClick={() => setActive(i)}
-              data-cursor="link"
-            >
-              <span className={styles.tabNum}>{p.n} &middot; {p.year}</span>
-              <span className={styles.tabNm}>{p.name}</span>
-            </button>
-          ))}
-        </div>
+              className={styles.peekZone}
+              onClick={() => step(-1)}
+              disabled={active === 0}
+              aria-label="Previous project"
+              data-cursor="prev"
+            />
+            <button
+              className={`${styles.peekZone} ${styles.peekZoneR}`}
+              onClick={() => step(1)}
+              disabled={active === total - 1}
+              aria-label="Next project"
+              data-cursor="next"
+            />
+            <div className={styles.peek} ref={peekRef}>
+              {WORKS.map((p, i) => {
+                const offset = (i - active + total) % total;
+                const isActive = offset === 0;
+                const fanIdx = offset;
+                const ang = (fanIdx % 2 === 0 ? -1 : 1) * Math.min(fanIdx * 0.6, 2.5);
+                const ty = -fanIdx * 5;
+                const tx = (fanIdx % 2 === 0 ? -1 : 1) * Math.min(fanIdx * 4, 16);
+                const opacity = Math.max(0, 0.5 - fanIdx * 0.08);
+                const state = isActive ? "active" : fanIdx > 4 ? "hidden" : "behind";
+                const dragPx = isMobile && isActive ? drag * 90 : 0;
+                const dragRot = isMobile && isActive ? drag * 6 : 0;
+                const transform = isActive
+                  ? `translate3d(${dragPx}px, 0, 0) rotate(${dragRot}deg)`
+                  : `translate3d(${tx}px, ${ty}px, 0) rotate(${ang}deg)`;
 
-        <div className={styles.deckStage}>
-          <button
-            className={styles.deckZone}
-            data-dir="prev"
-            data-cursor="prev"
-            onClick={() => step(-1)}
-            disabled={active === 0}
-            aria-label="Previous project"
-          >
-            <span className={styles.zoneLabel}>
-              <span className={styles.zoneArrow}>←</span>
-              <span>Prev</span>
-              {active > 0 && <span className={styles.zoneNum}>/ {WORKS[active - 1].n}</span>}
-            </span>
-          </button>
-          <button
-            className={`${styles.deckZone} ${styles.deckZoneNext}`}
-            data-dir="next"
-            data-cursor="next"
-            onClick={() => step(1)}
-            disabled={active === total - 1}
-            aria-label="Next project"
-          >
-            <span className={styles.zoneLabel}>
-              {active < total - 1 && <span className={styles.zoneNum}>{WORKS[active + 1].n} /</span>}
-              <span>Next</span>
-              <span className={styles.zoneArrow}>→</span>
-            </span>
-          </button>
+                return (
+                  <article
+                    key={p.n}
+                    className={styles.card}
+                    data-state={state}
+                    style={{
+                      "--card-tint": p.tint,
+                      transform,
+                      opacity: isActive ? 1 - Math.abs(drag) * 0.2 : opacity,
+                      zIndex: 50 - fanIdx,
+                      transition: dragState.current.active ? "none" : undefined,
+                    } as React.CSSProperties}
+                    onClick={() => (isActive ? setOpen(true) : setActive(i))}
+                    data-cursor="link"
+                  >
+                    <CardContent p={p} />
+                  </article>
+                );
+              })}
+            </div>
+          </div>
 
-          <div className={styles.deck} ref={deckRef}>
-            {WORKS.map((p, i) => {
-              const offset = (i - active + total) % total;
-              const isActive = offset === 0;
-              const fanIdx = offset;
-              const ang = (fanIdx % 2 === 0 ? -1 : 1) * Math.min(fanIdx * 0.8, 3);
-              const ty = -fanIdx * 5;
-              const tz = -fanIdx * 30;
-              const tx = (fanIdx % 2 === 0 ? -1 : 1) * Math.min(fanIdx * 6, 22);
-              const opacity = Math.max(0, 0.55 - fanIdx * 0.08);
-              const state = isActive ? "active" : fanIdx > 4 ? "hidden" : "behind";
-              const dragPx = isMobile && isActive ? drag * 90 : 0;
-              const dragRot = isMobile && isActive ? drag * 6 : 0;
-              const transform = isActive
-                ? `translate3d(${dragPx}px, 0, 0) rotate(${dragRot}deg)`
-                : `translate3d(${tx}px, ${ty}px, ${tz}px) rotate(${ang}deg)`;
-
-              return (
-                <article
-                  key={p.n}
-                  className={styles.card}
-                  data-state={state}
-                  style={{
-                    "--card-tint": p.tint,
-                    transform,
-                    opacity: isActive ? 1 - Math.abs(drag) * 0.2 : opacity,
-                    zIndex: 50 - fanIdx,
-                    transition: dragState.current.active ? "none" : undefined,
-                  } as React.CSSProperties}
-                  onClick={() => (!isActive ? setActive(i) : null)}
-                  data-cursor="link"
-                >
-                  <span className={styles.tabLabel}>{p.cat} · {p.year}</span>
-                  <span className={styles.punch} />
-                  <div className={styles.filedStripe}>
-                    <span>FILE No. {p.n} / 06 · ARCHIVE 2026</span>
-                    <span className={styles.barcode}>
-                      {[2, 1, 3, 1, 2, 1, 1, 2, 3, 1, 2].map((bw, k) => (
-                        <i key={k} style={{ width: bw + "px" }} />
-                      ))}
-                    </span>
-                  </div>
-                  <span className={styles.corner}>REF · {p.url}</span>
-                  <div className={styles.left}>
-                    <div>
-                      <div className={styles.headRow}>
-                        <span className={styles.headN}>◉ {p.n}</span>
-                        <span>·</span>
-                        <span>{p.year}</span>
-                      </div>
-                      <div className={styles.name}>{p.name}</div>
-                      <div className={styles.cat}>{p.cat}</div>
-                    </div>
-                    <div className={styles.footer}>
-                      <div className={styles.url}>{p.url}</div>
-                      <div className={styles.chips}>
-                        {p.tech.map((t) => <span key={t}>{t}</span>)}
-                      </div>
-                    </div>
-                  </div>
-                  <div className={styles.right}>
-                    <div className={styles.motif}>
-                      <span className={`${styles.reg} ${styles.regTl}`}>+</span>
-                      <span className={`${styles.reg} ${styles.regTr}`}>+</span>
-                      <span className={`${styles.reg} ${styles.regBr}`}>+</span>
-                      <Motif kind={p.motif} />
-                    </div>
-                    <div className={styles.row}><div className={styles.rowK}>Problem</div><div className={styles.rowV}>{p.problem}</div></div>
-                    <div className={styles.row}><div className={styles.rowK}>Role</div><div className={styles.rowV}>{p.role}</div></div>
-                    <div className={styles.row}><div className={styles.rowK}>Outcome</div><div className={styles.rowV}>{p.outcome}</div></div>
-                  </div>
-                  <span className={styles.stamp}>Shipped {p.year}</span>
-                </article>
-              );
-            })}
+          {/* Folder body — covers card bottoms */}
+          <div className={styles.folderBody}>
+            <span className={styles.folderTabBump} aria-hidden />
+            <div className={styles.folderInner}>
+              <div className={styles.folderPaper}>
+                <div className={styles.tabs}>
+                  {WORKS.map((p, i) => (
+                    <button
+                      key={p.n}
+                      type="button"
+                      className={`${styles.tab} ${i === active ? styles.tabActive : ""}`}
+                      onClick={() => { setActive(i); setOpen(true); }}
+                      data-cursor="link"
+                    >
+                      <span className={styles.tabNum}>{p.n} &middot; {p.year}</span>
+                      <span className={styles.tabNm}>{p.name}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <div className={styles.folderMeta}>
+                <span>6 project files &middot; 2022–2025</span>
+              </div>
+            </div>
+            <span className={styles.folderFlap} aria-hidden />
           </div>
         </div>
 
-        <div className={styles.swipeHint}>
-          <span>←</span> Swipe to browse <span>→</span>
-        </div>
-
-        <div className={styles.deckControls}>
+        {/* ── Controls ── */}
+        <div className={styles.controls}>
           <div className={styles.progress}>
             <span>{String(active + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}</span>
             <div className={styles.bar} style={{ "--p": `${((active + 1) / total) * 100}%` } as React.CSSProperties} />
             <span>{w.name}</span>
           </div>
           <div className={styles.arrows}>
-            <button onClick={() => step(-1)} data-cursor="link" aria-label="Previous">←</button>
-            <button onClick={() => step(1)} data-cursor="link" aria-label="Next">→</button>
+            <button onClick={() => step(-1)} disabled={active === 0} data-cursor="link" aria-label="Previous">&larr;</button>
+            <button onClick={() => step(1)} disabled={active === total - 1} data-cursor="link" aria-label="Next">&rarr;</button>
           </div>
-          <a className={styles.visit} href={`https://${w.url}`} target="_blank" rel="noopener" data-cursor="link">
-            Visit {w.name} <span>↗</span>
+          <a className={styles.visitLink} href={`https://${w.url}`} target="_blank" rel="noopener" data-cursor="link">
+            Visit {w.name} <span>&nearr;</span>
           </a>
+        </div>
+
+        <div className={styles.swipeHint}>
+          <span>&larr;</span> Swipe to browse <span>&rarr;</span>
+        </div>
+
+        {/* ── Dialog overlay ── */}
+        <div
+          className={`${styles.overlay} ${open ? styles.overlayOpen : ""}`}
+          onClick={() => setOpen(false)}
+          aria-hidden={!open}
+        >
+          <div className={styles.dialog} onClick={(e) => e.stopPropagation()}>
+            <div className={styles.dlgBar}>
+              <div className={styles.dlgNav}>
+                <button onClick={() => step(-1)} disabled={active === 0} data-cursor="link" aria-label="Previous">&larr;</button>
+                <span>{String(active + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}</span>
+                <button onClick={() => step(1)} disabled={active === total - 1} data-cursor="link" aria-label="Next">&rarr;</button>
+              </div>
+              <button className={styles.dlgClose} onClick={() => setOpen(false)} data-cursor="link" aria-label="Close">&times;</button>
+            </div>
+
+            <article
+              key={w.n}
+              className={styles.dlgCard}
+              style={{ "--card-tint": w.tint } as React.CSSProperties}
+            >
+              <CardContent p={w} />
+            </article>
+
+            <div className={styles.dlgFoot}>
+              <div className={styles.dlgProgress}>
+                <span>{w.name}</span>
+                <div className={styles.dlgProgressBar} style={{ "--p": `${((active + 1) / total) * 100}%` } as React.CSSProperties} />
+              </div>
+              <a className={styles.dlgVisit} href={`https://${w.url}`} target="_blank" rel="noopener" data-cursor="link">
+                Visit {w.name} <span>&nearr;</span>
+              </a>
+            </div>
+          </div>
         </div>
       </div>
     </section>

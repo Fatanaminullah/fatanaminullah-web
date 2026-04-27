@@ -1,3 +1,4 @@
+/* ── Section ── */
 .works {
   position: relative;
   padding: 140px 40px 140px;
@@ -5,6 +6,7 @@
 }
 .pin { display: grid; gap: 36px; }
 
+/* ── Head ── */
 .head {
   display: grid; grid-template-columns: 1fr auto; align-items: end; gap: 40px;
   max-width: 1440px; margin: 0 auto;
@@ -27,26 +29,164 @@
   color: var(--fg-muted); text-align: right; line-height: 1.7;
 }
 
-/* Tab strip */
-.tabs {
-  display: flex; gap: 4px;
-  max-width: 1440px; margin: 0 auto;
-  border-bottom: 1px solid var(--line);
-  overflow-x: auto; -webkit-overflow-scrolling: touch;
+/* ══════════════════════════════════════
+   Folder container
+   ══════════════════════════════════════ */
+.folder {
+  max-width: 1440px;
+  margin: 0 auto;
+  position: relative;
+  --folder-body: #DDD5CA;
+  --folder-light: #E6E0D8;
+  --folder-dark: #CFC4B6;
+  --folder-flap: #C9BEAD;
+  --folder-outline: rgba(44, 40, 37, 0.2);
 }
-.tabs::-webkit-scrollbar { display: none; }
+
+/* ── Peek stage: cards stick out above the folder ── */
+.peekStage {
+  position: relative;
+  z-index: 2;
+  height: 300px;
+  overflow: hidden;
+}
+
+.peek {
+  position: absolute;
+  left: 50%;
+  top: 24px;
+  transform: translateX(-50%);
+  width: min(820px, calc(100% - 80px));
+  height: 460px;
+}
+
+/* Click zones for prev / next */
+.peekZone {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 28%;
+  height: 100%;
+  z-index: 10;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  cursor: w-resize;
+}
+.peekZoneR {
+  left: auto;
+  right: 0;
+  cursor: e-resize;
+}
+.peekZone:disabled {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ── Folder body: sits below peek, covers card bottoms ── */
+.folderBody {
+  position: relative;
+  z-index: 3;
+  margin-top: -12px;
+  padding: 32px 22px 56px;
+  background:
+    linear-gradient(165deg, rgba(255, 255, 255, 0.3) 0%, transparent 40%),
+    linear-gradient(180deg, var(--folder-light) 0%, var(--folder-body) 55%, var(--folder-dark) 100%);
+  border: 2px solid var(--folder-outline);
+  border-radius: 16px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.5),
+    0 18px 48px -24px rgba(80, 55, 30, 0.36);
+}
+
+/* Back-panel tab bump */
+.folderTabBump {
+  position: absolute;
+  top: -30px;
+  left: clamp(24px, 5vw, 52px);
+  width: clamp(120px, 20vw, 180px);
+  height: 32px;
+  box-sizing: border-box;
+  background: linear-gradient(180deg, var(--folder-light) 0%, var(--folder-body) 100%);
+  border: 2px solid var(--folder-outline);
+  border-bottom: none;
+  border-radius: 14px 14px 0 0;
+  pointer-events: none;
+}
+
+.folderInner {
+  position: relative;
+  z-index: 2;
+}
+
+/* White paper inside folder */
+.folderPaper {
+  padding: 14px;
+  background: var(--cream);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 1),
+    0 3px 14px rgba(80, 55, 30, 0.08);
+}
+
+.folderMeta {
+  margin-top: 14px;
+  text-align: center;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+  opacity: 0.6;
+}
+
+/* Front flap */
+.folderFlap {
+  position: absolute;
+  z-index: 4;
+  left: 24px;
+  right: 24px;
+  bottom: 0;
+  height: 50px;
+  box-sizing: border-box;
+  background: linear-gradient(180deg, var(--folder-dark) 0%, var(--folder-flap) 100%);
+  border: 2px solid var(--folder-outline);
+  border-top: none;
+  border-radius: 0 0 14px 14px;
+  clip-path: polygon(5% 0, 95% 0, 100% 100%, 0 100%);
+  pointer-events: none;
+}
+
+/* ── Tab strip (on the paper) ── */
+.tabs {
+  display: flex;
+  gap: 4px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.tabs::-webkit-scrollbar { height: 4px; }
+.tabs::-webkit-scrollbar-thumb { background: var(--line-strong); border-radius: 99px; }
 
 .tab {
-  flex: 1; min-width: 140px;
-  background: transparent; border: 0;
-  padding: 16px 18px 18px; text-align: left; cursor: none;
-  font-family: var(--mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase;
-  color: var(--fg-muted); position: relative; transition: color .3s;
-  border-right: 1px solid var(--line);
+  flex: 1;
+  min-width: 136px;
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 14px 16px 16px;
+  text-align: left;
+  cursor: none;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+  position: relative;
+  transition: color .3s, background .3s, border-color .3s;
 }
-.tab:last-child { border-right: 0; }
-.tab:hover { color: var(--fg); }
-.tabActive { color: var(--fg); }
+.tab:hover { color: var(--fg); background: rgba(255, 255, 255, 0.55); }
+.tabActive { color: var(--fg); background: rgba(255, 255, 255, 0.75); border-color: var(--accent); }
 .tabNum { display: block; font-size: 10px; opacity: 0.6; margin-bottom: 4px; }
 .tabNm {
   font-family: var(--serif); font-style: normal;
@@ -54,54 +194,17 @@
 }
 .tabActive .tabNm { font-style: italic; color: var(--accent); }
 .tab::after {
-  content: ''; position: absolute; left: 0; right: 0; bottom: -1px;
-  height: 2px; background: var(--accent);
+  content: ''; position: absolute; left: 12px; right: 12px; bottom: 8px;
+  height: 2px; background: var(--accent); border-radius: 2px;
   transform: scaleX(0); transform-origin: left;
-  transition: transform .5s cubic-bezier(.2,.8,.2,1);
+  transition: transform .5s cubic-bezier(.2, .8, .2, 1);
 }
 .tabActive::after { transform: scaleX(1); }
 
-/* Deck stage */
-.deckStage {
-  max-width: 1440px; margin: 0 auto;
-  position: relative; width: 100%; height: 560px;
-  perspective: 1800px;
-  align-self: center; justify-self: center;
-}
-
-.deck {
-  position: absolute;
-  left: 50%; top: 50%;
-  transform: translate(-50%, -50%);
-  width: min(820px, 90%); height: 460px;
-  transform-style: preserve-3d;
-}
-
-/* Click zones */
-.deckZone {
-  position: absolute; top: 0; height: 100%; width: 32%; z-index: 5;
-  background: transparent; border: 0; padding: 0; font: inherit;
-  display: flex; align-items: center; color: var(--fg); overflow: hidden;
-  left: 0; justify-content: flex-start; padding-left: 4%; cursor: w-resize;
-}
-.deckZoneNext { left: auto; right: 0; justify-content: flex-end; padding-right: 4%; padding-left: 0; cursor: e-resize; }
-.deckZone:disabled { opacity: 0; pointer-events: none; }
-
-.zoneLabel {
-  font-family: var(--serif); font-style: italic; font-weight: 400;
-  font-size: clamp(40px, 5vw, 72px); line-height: 1; letter-spacing: -0.02em;
-  color: var(--fg-muted); opacity: 0; transform: translateX(0);
-  transition: opacity .4s cubic-bezier(.2,.8,.2,1), transform .5s cubic-bezier(.2,.8,.2,1), color .3s;
-  display: inline-flex; align-items: baseline; gap: 14px; white-space: nowrap; pointer-events: none;
-}
-.zoneArrow { font-family: var(--serif); font-style: normal; font-size: 0.6em; color: var(--accent); }
-.zoneNum { font-family: var(--mono); font-style: normal; font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: var(--fg-muted); align-self: center; }
-.deckZone:hover .zoneLabel { opacity: 1; transform: translateX(8px); color: var(--fg); }
-.deckZoneNext:hover .zoneLabel { opacity: 1; transform: translateX(-8px); color: var(--fg); }
-
-/* Card */
-.card {
-  position: absolute; left: 0; top: 0; right: 0; bottom: 0;
+/* ══════════════════════════════════════
+   Card (shared between peek + dialog)
+   ══════════════════════════════════════ */
+.card, .dlgCard {
   background:
     radial-gradient(120% 80% at 50% 0%, color-mix(in oklab, var(--card-tint) 14%, transparent), transparent 60%),
     radial-gradient(60% 40% at 100% 100%, color-mix(in oklab, var(--card-tint) 18%, transparent), transparent 70%),
@@ -109,21 +212,20 @@
   border: 1px solid var(--line-strong);
   border-radius: 2px 16px 4px 4px;
   padding: 60px 44px 36px;
-  display: grid; grid-template-columns: 1fr 1fr; gap: 36px;
-  transform-style: preserve-3d;
-  transition: transform 1.1s cubic-bezier(.2,.8,.2,1), opacity .8s ease, box-shadow .8s ease;
-  will-change: transform, opacity;
-  backface-visibility: hidden;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 36px;
   box-shadow:
     inset 0 1px 0 rgba(255, 248, 235, 0.4),
     0 1px 0 rgba(80, 55, 30, 0.08),
     0 18px 38px -16px rgba(80, 55, 30, 0.28),
     0 4px 12px -2px rgba(80, 55, 30, 0.12);
-  cursor: none; overflow: hidden;
+  cursor: none;
+  overflow: visible;
 }
 
-/* Manila folder tab */
-.card::before {
+/* Manila folder tab on card */
+.card::before, .dlgCard::before {
   content: ''; position: absolute; top: -16px; left: 32px;
   width: 200px; height: 28px;
   background: color-mix(in oklab, var(--card-tint) 35%, var(--cream));
@@ -131,8 +233,8 @@
   border-radius: 8px 14px 0 0;
   transform: skewX(-8deg); transform-origin: bottom left; z-index: 0;
 }
-/* Stacked papers */
-.card::after {
+/* Stacked papers behind card */
+.card::after, .dlgCard::after {
   content: ''; position: absolute; left: -3px; right: -3px; bottom: -8px; height: 12px;
   background:
     linear-gradient(180deg, transparent 0%, transparent 33%, var(--cream) 33%, var(--cream) 50%, transparent 50%, transparent 66%, color-mix(in oklab, var(--cream) 92%, var(--card-tint)) 66%);
@@ -141,6 +243,45 @@
   z-index: -1; opacity: 0.85;
 }
 
+/* Peek card — absolute positioning in deck */
+.card {
+  position: absolute;
+  left: 0; top: 0; right: 0; bottom: 0;
+  transition: transform 1s cubic-bezier(.2, .8, .2, 1), opacity .8s ease;
+  will-change: transform, opacity;
+}
+
+/* Dialog card — flow positioning */
+.dlgCard {
+  position: relative;
+  width: 100%;
+  min-height: 420px;
+  margin-top: 20px;
+  animation: cardEnter .5s cubic-bezier(.16, 1, .3, 1);
+}
+
+@keyframes cardEnter {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Card states (peek only) */
+.card[data-state="active"] {
+  z-index: 50;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 248, 235, 0.4),
+    0 1px 0 rgba(80, 55, 30, 0.06),
+    0 30px 80px -30px rgba(80, 55, 30, 0.45),
+    0 60px 120px -50px rgba(80, 55, 30, 0.25);
+}
+.card[data-state="behind"] { pointer-events: none; }
+.card[data-state="behind"] .right,
+.card[data-state="behind"] .left,
+.card[data-state="behind"] .stamp,
+.card[data-state="behind"] .corner { opacity: 0.15; }
+.card[data-state="hidden"] { opacity: 0; pointer-events: none; }
+
+/* ── Card internal elements ── */
 .tabLabel {
   position: absolute; top: -10px; left: 56px;
   font-family: var(--mono); font-size: 9px; letter-spacing: .22em; text-transform: uppercase;
@@ -150,7 +291,7 @@
   position: absolute; top: -4px; left: 200px;
   width: 8px; height: 8px; border-radius: 50%;
   background: var(--bg); border: 1px solid var(--line-strong);
-  box-shadow: inset 0 1px 1px rgba(0,0,0,0.15); z-index: 3;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.15); z-index: 3;
 }
 .filedStripe {
   position: absolute; top: 28px; left: 44px; right: 44px;
@@ -161,7 +302,6 @@
 }
 .barcode { display: inline-flex; gap: 1px; height: 12px; align-items: stretch; }
 .barcode i { display: block; width: 1.5px; background: var(--fg); }
-
 .corner {
   position: absolute; top: 28px; right: 44px;
   font-family: var(--mono); font-size: 9px; letter-spacing: .18em; text-transform: uppercase;
@@ -180,6 +320,7 @@
   border: 1px solid var(--accent); border-radius: 4px; opacity: 0.4;
 }
 
+/* ── Card content areas ── */
 .left {
   display: flex; flex-direction: column; justify-content: space-between; padding-top: 24px;
 }
@@ -236,22 +377,10 @@
 .rowK { color: var(--fg-muted); text-transform: uppercase; padding-top: 2px; }
 .rowV { font-family: var(--serif); font-style: italic; font-size: 14px; line-height: 1.45; color: var(--fg); letter-spacing: -0.005em; }
 
-/* Card states */
-.card[data-state="active"] {
-  z-index: 50;
-  transform: translate3d(0, 0, 0) rotate(0deg);
-  opacity: 1;
-  box-shadow: 0 1px 0 rgba(80, 55, 30, 0.06), 0 30px 80px -30px rgba(80, 55, 30, 0.45), 0 60px 120px -50px rgba(80, 55, 30, 0.25);
-}
-.card[data-state="behind"] { opacity: 0.5; pointer-events: none; }
-.card[data-state="behind"] .right,
-.card[data-state="behind"] .left,
-.card[data-state="behind"] .stamp,
-.card[data-state="behind"] .corner { opacity: 0.18; }
-.card[data-state="hidden"] { opacity: 0; pointer-events: none; transform: translate3d(0, 0, -400px); }
-
-/* Controls */
-.deckControls {
+/* ══════════════════════════════════════
+   Controls below folder
+   ══════════════════════════════════════ */
+.controls {
   max-width: 1440px; margin: 0 auto;
   display: flex; justify-content: space-between; align-items: center; gap: 24px;
   font-family: var(--mono); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--fg-muted);
@@ -260,7 +389,7 @@
 .bar { width: 200px; height: 1px; background: var(--line-strong); position: relative; }
 .bar::after {
   content: ''; position: absolute; left: 0; top: -1px; height: 3px;
-  background: var(--accent); width: var(--p, 0%); transition: width .6s cubic-bezier(.2,.8,.2,1);
+  background: var(--accent); width: var(--p, 0%); transition: width .6s cubic-bezier(.2, .8, .2, 1);
 }
 .arrows { display: flex; gap: 8px; }
 .arrows button {
@@ -270,33 +399,139 @@
   transition: background .3s, color .3s, border-color .3s;
 }
 .arrows button:hover { background: var(--accent); color: var(--cream); border-color: var(--accent); }
-.visit {
+.arrows button:disabled { opacity: 0.3; pointer-events: none; }
+.visitLink {
   display: inline-flex; align-items: center; gap: 10px;
   padding: 14px 22px; background: var(--fg); color: var(--cream);
   border-radius: 999px; font-family: var(--mono); font-size: 11px;
   letter-spacing: .14em; text-transform: uppercase; text-decoration: none;
 }
-.visit:hover { background: var(--accent); }
+.visitLink:hover { background: var(--accent); }
 
 .swipeHint { display: none; }
 
+/* ══════════════════════════════════════
+   Dialog overlay
+   ══════════════════════════════════════ */
+.overlay {
+  position: fixed; inset: 0; z-index: 1000;
+  display: flex; align-items: center; justify-content: center;
+  padding: 24px;
+  background: rgba(44, 40, 37, 0.52);
+  backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+  opacity: 0; pointer-events: none;
+  transition: opacity .4s cubic-bezier(.2, .8, .2, 1);
+}
+.overlayOpen { opacity: 1; pointer-events: auto; }
+
+.dialog {
+  display: flex; flex-direction: column; gap: 16px;
+  max-width: 920px; width: 100%;
+  max-height: calc(100vh - 48px);
+  overflow-y: auto;
+  transform: translateY(80px) scale(0.88);
+  opacity: 0;
+  transition: transform .6s cubic-bezier(.16, 1, .3, 1), opacity .4s ease;
+}
+.overlayOpen .dialog {
+  transform: translateY(0) scale(1); opacity: 1;
+}
+
+/* Dialog chrome */
+.dlgBar {
+  display: flex; justify-content: space-between; align-items: center; flex-shrink: 0;
+}
+.dlgNav {
+  display: flex; align-items: center; gap: 10px;
+  font-family: var(--mono); font-size: 11px; letter-spacing: .14em;
+  color: rgba(255, 255, 255, 0.6);
+}
+.dlgNav button {
+  width: 40px; height: 40px; border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.85);
+  font-family: var(--serif); font-size: 18px; cursor: none;
+  transition: background .3s, border-color .3s;
+}
+.dlgNav button:hover { background: rgba(255, 255, 255, 0.18); border-color: rgba(255, 255, 255, 0.35); }
+.dlgNav button:disabled { opacity: 0.25; pointer-events: none; }
+.dlgClose {
+  width: 40px; height: 40px; border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 18px; font-family: var(--sans); cursor: none;
+  transition: background .3s;
+}
+.dlgClose:hover { background: rgba(255, 255, 255, 0.22); }
+
+/* Dialog footer */
+.dlgFoot {
+  display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-shrink: 0;
+}
+.dlgProgress {
+  display: flex; align-items: center; gap: 12px;
+  font-family: var(--mono); font-size: 10px; letter-spacing: .14em; text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.55);
+}
+.dlgProgressBar {
+  width: 160px; height: 1px; background: rgba(255, 255, 255, 0.18); position: relative;
+}
+.dlgProgressBar::after {
+  content: ''; position: absolute; left: 0; top: -1px; height: 3px;
+  background: var(--accent); width: var(--p, 0%);
+  transition: width .6s cubic-bezier(.2, .8, .2, 1);
+}
+.dlgVisit {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 14px 22px;
+  background: rgba(255, 255, 255, 0.1); color: rgba(255, 255, 255, 0.88);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 999px; font-family: var(--mono); font-size: 11px;
+  letter-spacing: .14em; text-transform: uppercase; text-decoration: none;
+  transition: background .3s, color .3s, border-color .3s;
+}
+.dlgVisit:hover { background: var(--accent); color: var(--cream); border-color: var(--accent); }
+
+/* ══════════════════════════════════════
+   Mobile
+   ══════════════════════════════════════ */
 @media (max-width: 900px) {
-  .works { height: auto; }
-  .pin { position: static; height: auto; padding: 80px 16px 80px; grid-template-rows: none; gap: 20px; overflow: visible; }
+  .works { padding: 80px 16px 80px; }
+  .pin { gap: 20px; }
   .head { grid-template-columns: 1fr; gap: 20px; }
   .works h2 { font-size: clamp(36px, 9vw, 56px); }
   .caption { text-align: left; font-size: 10px; }
+
+  /* Peek */
+  .peekStage { height: 240px; }
+  .peek { width: calc(100% - 32px); max-width: 360px; top: 16px; height: 420px; }
+  .peekZone { display: none; }
+
+  /* Folder body */
+  .folderBody { padding: 24px 14px 44px; border-radius: 14px; margin-top: -8px; }
+  .folderTabBump { top: -24px; left: 18px; height: 26px; border-radius: 12px 12px 0 0; }
+  .folderPaper { padding: 10px; border-radius: 10px; }
+  .folderFlap { left: 16px; right: 16px; height: 38px; border-radius: 0 0 12px 12px; }
+
   .tabs {
-    gap: 0; margin-bottom: 4px; position: relative;
+    gap: 6px;
     mask-image: linear-gradient(to right, black calc(100% - 24px), transparent);
     -webkit-mask-image: linear-gradient(to right, black calc(100% - 24px), transparent);
   }
-  .tab { min-width: 110px; padding: 12px 12px 14px; font-size: 9px; letter-spacing: .1em; flex: 0 0 auto; }
+  .tab { min-width: 110px; padding: 12px 12px 14px; font-size: 9px; letter-spacing: .1em; flex: 0 0 auto; border-radius: 8px; }
   .tabNm { font-size: 14px; }
 
-  .deckStage { height: 480px; perspective: 1200px; touch-action: pan-y; }
-  .deck { width: 100%; height: 460px; max-width: 360px; }
-  .card { grid-template-columns: 1fr; grid-template-rows: auto 1fr; padding: 22px 20px; border-radius: 16px; }
+  /* Peek card mobile overrides */
+  .card {
+    padding: 22px 20px;
+    border-radius: 16px;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+  }
+  .card::before, .card::after { display: none; }
+
   .left { gap: 12px; }
   .headRow { font-size: 9px; }
   .name { font-size: clamp(28px, 8.5vw, 40px); }
@@ -310,17 +545,32 @@
   .row { gap: 4px; padding: 6px 0; }
   .rowK { font-size: 9px; }
   .rowV { font-size: 13px; line-height: 1.4; }
-  .corner, .stamp { display: none; }
-  .deckControls { flex-direction: column-reverse; gap: 14px; align-items: stretch; }
+  .corner, .stamp, .filedStripe, .tabLabel, .punch { display: none; }
+
+  /* Controls */
+  .controls { flex-direction: column-reverse; gap: 14px; align-items: stretch; }
   .progress { justify-content: center; gap: 14px; font-size: 9px; }
   .bar { flex: 1; max-width: 120px; }
   .arrows { display: none; }
-  .visit { justify-content: center; padding: 14px 18px; font-size: 10px; }
-  .deckZone { display: none; }
+  .visitLink { justify-content: center; padding: 14px 18px; font-size: 10px; }
+
   .swipeHint {
     display: block; text-align: center;
     font-family: var(--mono); font-size: 9px; letter-spacing: .18em; text-transform: uppercase;
     color: var(--fg-muted); margin-top: -4px;
   }
   .swipeHint span { color: var(--accent); }
+
+  /* Dialog mobile */
+  .overlay { padding: 16px; }
+  .dialog { gap: 12px; max-height: calc(100vh - 32px); }
+  .dlgCard {
+    grid-template-columns: 1fr; grid-template-rows: auto 1fr;
+    padding: 22px 20px; border-radius: 16px; min-height: auto; margin-top: 0;
+  }
+  .dlgCard::before, .dlgCard::after { display: none; }
+  .dlgFoot { flex-direction: column-reverse; gap: 12px; }
+  .dlgProgress { justify-content: center; gap: 14px; font-size: 9px; }
+  .dlgProgressBar { flex: 1; max-width: 120px; }
+  .dlgVisit { width: 100%; justify-content: center; padding: 14px 18px; font-size: 10px; }
 }
