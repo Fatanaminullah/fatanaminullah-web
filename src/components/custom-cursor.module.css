@@ -1,37 +1,143 @@
-.dot, .ring {
-  position: fixed; top: 0; left: 0; pointer-events: none; z-index: 10000;
+.pin,
+.annotation {
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 10000;
   transform: translate(-50%, -50%);
 }
 
-.dot {
-  width: 5px; height: 5px; border-radius: 50%;
+/* Editorial ink pin: tiny, precise, and warmer than a generic ring cursor. */
+.pin {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
   background: var(--accent);
-  transition: transform .15s ease, opacity .2s;
+  box-shadow:
+    0 0 0 2px color-mix(in oklab, var(--cream) 82%, transparent),
+    0 0 0 5px color-mix(in oklab, var(--accent) 14%, transparent),
+    0 0 24px color-mix(in oklab, var(--accent) 42%, transparent);
+  transition: opacity 0.2s ease, transform 0.15s ease;
 }
 
-.ring {
-  width: 28px; height: 28px; border-radius: 50%;
-  border: 1px solid var(--accent);
-  transition: width .35s cubic-bezier(.2,.8,.2,1), height .35s cubic-bezier(.2,.8,.2,1), border-color .3s, background .3s, opacity .2s;
+.pin::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 1.5px;
+  height: 22px;
+  background: color-mix(in oklab, var(--accent) 78%, transparent);
+  transform: translate(-50%, -50%) rotate(-42deg);
+  transform-origin: 50% 50%;
+  opacity: 0.62;
 }
 
-.ring[data-variant="link"] { width: 56px; height: 56px; background: color-mix(in oklab, var(--accent) 12%, transparent); }
-.ring[data-variant="image"] { width: 88px; height: 88px; background: color-mix(in oklab, var(--accent) 18%, transparent); }
-.ring[data-variant="image"]::after {
-  content: 'view'; position: absolute; inset: 0; display: grid; place-items: center;
-  font-family: var(--mono); font-size: 10px; color: var(--fg); letter-spacing: .14em; text-transform: uppercase;
+.annotation {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--accent);
+  transition: opacity 0.2s ease, transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
-.ring[data-variant="prev"], .ring[data-variant="next"] {
-  width: 84px; height: 84px;
-  background: var(--fg); border-color: var(--fg);
+.stroke {
+  width: 34px;
+  height: 1.5px;
+  background: currentColor;
+  opacity: 0.58;
+  transform: scaleX(0.7);
+  transform-origin: right center;
+  transition: opacity 0.22s ease, transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
-.ring[data-variant="prev"]::after, .ring[data-variant="next"]::after {
-  position: absolute; inset: 0; display: grid; place-items: center;
-  font-family: var(--serif); font-style: italic; font-size: 38px;
-  color: var(--cream); line-height: 1;
-}
-.ring[data-variant="prev"]::after { content: '←'; }
-.ring[data-variant="next"]::after { content: '→'; }
 
-@media (hover: none) { .dot, .ring { display: none; } }
+.annotation::after {
+  content: attr(data-label);
+  min-width: 0;
+  padding: 7px 11px 6px;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--cream) 88%, transparent);
+  color: var(--fg);
+  box-shadow: 0 14px 34px -18px rgba(44, 40, 37, 0.42);
+  font-family: var(--mono);
+  font-size: 10px;
+  line-height: 1;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  opacity: 0;
+  transform: translateX(-4px);
+  transition: opacity 0.22s ease, transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+  pointer-events: none;
+}
+
+.annotation[data-variant="link"] .stroke,
+.annotation[data-variant="image"] .stroke {
+  opacity: 0.9;
+  transform: scaleX(1);
+}
+
+.annotation[data-variant="link"]::after,
+.annotation[data-variant="image"]::after {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.annotation[data-variant="image"]::after {
+  background: color-mix(in oklab, var(--accent) 16%, var(--cream));
+  border-color: color-mix(in oklab, var(--accent) 42%, var(--line-strong));
+}
+
+.annotation[data-variant="prev"],
+.annotation[data-variant="next"] {
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  background: var(--fg);
+  border: 1px solid var(--fg);
+  color: var(--cream);
+  display: grid;
+  place-items: center;
+}
+
+.annotation[data-variant="prev"] .stroke,
+.annotation[data-variant="next"] .stroke {
+  display: none;
+}
+
+.annotation[data-variant="prev"]::after,
+.annotation[data-variant="next"]::after {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 38px;
+  color: var(--cream);
+  line-height: 1;
+  opacity: 1;
+  transform: none;
+  pointer-events: none;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  letter-spacing: 0;
+}
+
+.annotation[data-variant="prev"]::after {
+  content: "←";
+}
+
+.annotation[data-variant="next"]::after {
+  content: "→";
+}
+
+@media (hover: none) {
+  .pin,
+  .annotation {
+    display: none;
+  }
+}

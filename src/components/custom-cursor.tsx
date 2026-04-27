@@ -14,22 +14,18 @@ function readCursorPref(): boolean {
 
 export default function CustomCursor() {
   const dotRef = useRef<HTMLDivElement>(null);
-  const ringRef = useRef<HTMLDivElement>(null);
+  const lagRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const dot = dotRef.current;
-    const ring = ringRef.current;
-    if (!dot || !ring) return;
-
-    const dotEl = dot;
-    const ringEl = ring;
+    const dotEl = dotRef.current;
+    const lagEl = lagRef.current;
+    if (!dotEl || !lagEl) return;
 
     dotEl.id = "cursor-dot";
-    ringEl.id = "cursor-ring";
+    lagEl.id = "cursor-ring";
 
-    // Hide on touch devices (matches design prototype cursor.js)
     if (matchMedia("(hover: none)").matches) {
-      dotEl.style.display = ringEl.style.display = "none";
+      dotEl.style.display = lagEl.style.display = "none";
       document.body.style.cursor = "auto";
       return;
     }
@@ -37,7 +33,7 @@ export default function CustomCursor() {
     function applyCustomVisibility() {
       const enabled = readCursorPref();
       const show = enabled;
-      dotEl.style.display = ringEl.style.display = show ? "" : "none";
+      dotEl!.style.display = lagEl!.style.display = show ? "" : "none";
       document.body.style.cursor = show ? "none" : "auto";
       return show;
     }
@@ -59,18 +55,25 @@ export default function CustomCursor() {
     function loop() {
       rx += (x - rx) * 0.14;
       ry += (y - ry) * 0.14;
-      dotEl.style.transform = `translate(${x}px, ${y}px) translate(-50%, -50%)`;
-      ringEl.style.transform = `translate(${rx}px, ${ry}px) translate(-50%, -50%)`;
+      dotEl!.style.transform = `translate(${x}px, ${y}px) translate(-50%, -50%) rotate(45deg)`;
+      lagEl!.style.transform = `translate(${rx}px, ${ry}px) translate(-50%, -50%)`;
       raf = requestAnimationFrame(loop);
     }
     loop();
 
     function onOver(e: MouseEvent) {
       const t = (e.target as HTMLElement).closest("[data-cursor]");
-      if (t) ringEl.dataset.variant = (t as HTMLElement).dataset.cursor!;
-      else delete ringEl.dataset.variant;
-      const v = ringEl.dataset.variant;
-      dotEl.style.opacity =
+      if (t) {
+        const variant = (t as HTMLElement).dataset.cursor!;
+        lagEl!.dataset.variant = variant;
+        lagEl!.dataset.label =
+          variant === "image" ? "view" : variant === "link" ? "open" : "";
+      } else {
+        delete lagEl!.dataset.variant;
+        delete lagEl!.dataset.label;
+      }
+      const v = lagEl!.dataset.variant;
+      dotEl!.style.opacity =
         v === "prev" || v === "next" ? "0" : "";
     }
     document.addEventListener("mouseover", onOver);
@@ -83,7 +86,10 @@ export default function CustomCursor() {
     return () => {
       window.removeEventListener("mousemove", onMove);
       document.removeEventListener("mouseover", onOver);
-      window.removeEventListener("fatan-cursor-pref-changed", onCursorPrefChanged);
+      window.removeEventListener(
+        "fatan-cursor-pref-changed",
+        onCursorPrefChanged,
+      );
       cancelAnimationFrame(raf);
       document.body.style.cursor = "";
     };
@@ -91,8 +97,10 @@ export default function CustomCursor() {
 
   return (
     <>
-      <div ref={dotRef} className={styles.dot} />
-      <div ref={ringRef} className={styles.ring} />
+      <div ref={dotRef} className={styles.pin} />
+      <div ref={lagRef} className={styles.annotation}>
+        <span className={styles.stroke} />
+      </div>
     </>
   );
 }
