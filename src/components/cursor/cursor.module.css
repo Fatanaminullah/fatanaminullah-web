@@ -1,0 +1,64 @@
+.cursorDot,
+.cursorRing {
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 10000;
+  transform: translate(-50%, -50%);
+}
+
+.cursorDot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent);
+  transition:
+    transform 0.15s ease,
+    opacity 0.2s;
+}
+
+.cursorRing {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1px solid var(--accent);
+  transition:
+    width 0.35s cubic-bezier(0.2, 0.8, 0.2, 1),
+    height 0.35s cubic-bezier(0.2, 0.8, 0.2, 1),
+    border-color 0.3s,
+    background 0.3s,
+    opacity 0.2s;
+}
+
+.cursorRing[data-variant="link"] {
+  width: 56px;
+  height: 56px;
+  background: color-mix(in oklab, var(--accent) 12%, transparent);
+}
+
+.cursorRing[data-variant="image"] {
+  width: 88px;
+  height: 88px;
+  background: color-mix(in oklab, var(--accent) 18%, transparent);
+}
+
+.cursorRing[data-variant="image"]::after {
+  content: "view";
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--fg);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+@media (hover: none) {
+  .cursorDot,
+  .cursorRing {
+    display: none !important;
+  }
+}

@@ -1,0 +1,113 @@
+.marquee {
+  position: relative;
+  padding: 60px 0 80px;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  overflow: hidden;
+}
+
+.eye {
+  text-align: center;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+  margin-bottom: 40px;
+}
+
+.eye span {
+  padding: 0 18px;
+}
+
+.eye::before,
+.eye::after {
+  content: "";
+  display: inline-block;
+  width: 40px;
+  height: 1px;
+  background: var(--fg-muted);
+  vertical-align: middle;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  will-change: transform;
+  padding: 16px 0;
+}
+
+.rowA {
+  animation: slide-left 48s linear infinite;
+}
+
+.rowB {
+  animation: slide-right 56s linear infinite;
+}
+
+@keyframes slide-left {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes slide-right {
+  from {
+    transform: translateX(-50%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.item {
+  display: inline-flex;
+  align-items: center;
+  gap: 22px;
+  font-family: var(--serif);
+  font-size: clamp(40px, 6vw, 96px);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--fg);
+  padding: 0 28px;
+  transition: color 0.3s;
+}
+
+.item:hover {
+  color: var(--accent);
+  font-style: italic;
+}
+
+.sep {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--accent);
+  opacity: 0.55;
+}
+
+.itemAlt {
+  font-style: italic;
+  color: var(--fg-dim);
+}
+
+.marquee:hover .rowA,
+.marquee:hover .rowB {
+  animation-play-state: paused;
+}
+
+@media (max-width: 720px) {
+  .marquee {
+    padding: 40px 0 60px;
+  }
+
+  .eye {
+    font-size: 10px;
+    margin-bottom: 20px;
+  }
+}
