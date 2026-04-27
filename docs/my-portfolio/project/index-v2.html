@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Fatan Aminullah — Earth Edition</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Inter:wght@300..700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F5F0EB;
+    --bg-2: #EDE7DF;
+    --cream: #FAF7F3;
+    --fg: #2C2825;
+    --fg-dim: #6B635A;
+    --fg-muted: #9C9489;
+    --line: rgba(44, 40, 37, 0.08);
+    --line-strong: rgba(44, 40, 37, 0.18);
+    --accent: #A0785A;
+
+    --serif: 'Fraunces', 'Times New Roman', serif;
+    --sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+    --mono: 'JetBrains Mono', ui-monospace, 'SF Mono', monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: var(--bg); color: var(--fg);
+    font-family: var(--sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    transition: background .6s ease, color .6s ease;
+  }
+  body { overflow-x: hidden; cursor: none; }
+  @media (hover: none) { body { cursor: auto; } }
+  a { color: inherit; text-decoration: none; }
+  ::selection { background: var(--accent); color: var(--cream); }
+
+  /* Paper / linen texture overlay */
+  .paper {
+    position: fixed; inset: 0; pointer-events: none; z-index: 9998;
+    opacity: 0.35; mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch' seed='3'/><feColorMatrix values='0 0 0 0 0.17  0 0 0 0 0.14  0 0 0 0 0.12  0 0 0 0.4 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  }
+  .vignette {
+    position: fixed; inset: 0; pointer-events: none; z-index: 9997;
+    background: radial-gradient(140% 100% at 50% 0%, transparent 50%, rgba(100, 70, 40, 0.08) 100%);
+  }
+
+  /* Custom cursor — small dot + ring, accent-colored */
+  .cursor-dot, .cursor-ring {
+    position: fixed; top: 0; left: 0; pointer-events: none; z-index: 10000;
+    transform: translate(-50%, -50%);
+  }
+  .cursor-dot {
+    width: 5px; height: 5px; border-radius: 50%;
+    background: var(--accent);
+    transition: transform .15s ease, opacity .2s;
+  }
+  .cursor-ring {
+    width: 28px; height: 28px; border-radius: 50%;
+    border: 1px solid var(--accent);
+    transition: width .35s cubic-bezier(.2,.8,.2,1), height .35s cubic-bezier(.2,.8,.2,1), border-color .3s, background .3s, opacity .2s;
+  }
+  .cursor-ring[data-variant="link"] { width: 56px; height: 56px; background: color-mix(in oklab, var(--accent) 12%, transparent); }
+  .cursor-ring[data-variant="image"] { width: 88px; height: 88px; background: color-mix(in oklab, var(--accent) 18%, transparent); }
+  .cursor-ring[data-variant="image"]::after {
+    content: 'view'; position: absolute; inset: 0; display: grid; place-items: center;
+    font-family: var(--mono); font-size: 10px; color: var(--fg); letter-spacing: .14em; text-transform: uppercase;
+  }
+  @media (hover: none) { .cursor-dot, .cursor-ring { display: none; } }
+
+  /* Nav */
+  .nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: grid; grid-template-columns: 1fr auto 1fr; align-items: center;
+    padding: 26px 40px; font-family: var(--mono); font-size: 11px; letter-spacing: .12em;
+    text-transform: uppercase;
+  }
+  .nav .brand { color: var(--fg); display: flex; align-items: center; gap: 10px; }
+  .nav .brand .mark {
+    width: 16px; height: 16px; border-radius: 50%;
+    background: var(--accent);
+    position: relative;
+  }
+  .nav .brand .mark::after {
+    content: ''; position: absolute; inset: 3px; border-radius: 50%;
+    background: var(--bg);
+  }
+  .nav .links { display: flex; gap: 32px; justify-self: center; }
+  .nav .links a { opacity: .7; transition: opacity .2s; position: relative; }
+  .nav .links a::before {
+    content: '('; position: absolute; left: -10px; top: 50%; transform: translateY(-50%);
+    opacity: 0; transition: opacity .2s, transform .2s;
+  }
+  .nav .links a::after {
+    content: ')'; position: absolute; right: -10px; top: 50%; transform: translateY(-50%);
+    opacity: 0; transition: opacity .2s, transform .2s;
+  }
+  .nav .links a:hover { opacity: 1; }
+  .nav .links a:hover::before, .nav .links a:hover::after { opacity: .5; }
+  .nav .clock { justify-self: end; font-variant-numeric: tabular-nums; color: var(--fg-dim); display: flex; align-items: center; gap: 8px; }
+  .nav .clock .pip { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); animation: blink 2s ease-in-out infinite; }
+  @keyframes blink { 0%, 100% { opacity: 1 } 50% { opacity: 0.3 } }
+  @media (max-width: 720px) { .nav { padding: 18px 20px; grid-template-columns: 1fr auto; } .nav .links { display: none; } .nav .clock { justify-self: end; } }
+
+  /* Sections */
+  section { position: relative; }
+
+  /* Reveal primitives */
+  .reveal-line { display: block; overflow: hidden; }
+  .reveal-line > span { display: inline-block; transform: translateY(105%); transition: transform 1.1s cubic-bezier(.2,.8,.2,1); }
+  .reveal-line.in > span { transform: translateY(0); }
+  .reveal-word { display: inline-block; overflow: hidden; vertical-align: baseline; }
+  .reveal-word > span { display: inline-block; transform: translateY(105%); transition: transform .9s cubic-bezier(.2,.8,.2,1); }
+  .reveal-word.in > span { transform: translateY(0); }
+  .reveal-fade { opacity: 0; transform: translateY(14px); transition: opacity 1s ease, transform 1s cubic-bezier(.2,.8,.2,1); }
+  .reveal-fade.in { opacity: 1; transform: none; }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 0; height: 0; }
+  html { scrollbar-width: none; }
+
+  /* Ask Fatan fab */
+  .ask-fab {
+    position: fixed; right: 28px; bottom: 28px; z-index: 200;
+    display: inline-flex; align-items: center; gap: 12px;
+    padding: 14px 22px 14px 18px;
+    background: var(--accent); color: var(--cream);
+    border-radius: 999px;
+    font-family: var(--mono); font-size: 11px; letter-spacing: .14em; text-transform: uppercase;
+    cursor: none;
+    box-shadow: 0 16px 40px -10px rgba(80, 55, 30, 0.4);
+    transition: transform .4s cubic-bezier(.2,.8,.2,1);
+  }
+  .ask-fab:hover { transform: translateY(-3px); }
+  .ask-fab .pulse {
+    position: relative; width: 8px; height: 8px; border-radius: 50%;
+    background: var(--cream);
+  }
+  .ask-fab .pulse::after {
+    content:''; position:absolute; inset:-5px; border-radius:50%;
+    border: 1px solid var(--cream);
+    animation: ask-pulse 1.8s ease-out infinite;
+  }
+  @keyframes ask-pulse { 0% { transform: scale(.6); opacity: 1 } 100% { transform: scale(1.6); opacity: 0 } }
+
+  /* Ask panel */
+  .ask-panel {
+    position: fixed; top: 0; right: 0; bottom: 0; width: min(460px, 92vw);
+    background: var(--cream);
+    border-left: 1px solid var(--line-strong);
+    box-shadow: -40px 0 80px -30px rgba(80, 55, 30, 0.25);
+    transform: translateX(100%);
+    transition: transform .6s cubic-bezier(.77,0,.175,1);
+    z-index: 300; display: flex; flex-direction: column;
+  }
+  .ask-panel.on { transform: translateX(0); }
+  .ask-panel header {
+    padding: 26px 28px 22px; border-bottom: 1px solid var(--line);
+    display: flex; justify-content: space-between; align-items: flex-start;
+  }
+  .ask-panel header h3 { font-family: var(--serif); font-size: 34px; font-weight: 400; letter-spacing: -.02em; line-height: 1; }
+  .ask-panel header h3 em { color: var(--accent); }
+  .ask-panel header .sub { font-family: var(--mono); font-size: 10px; letter-spacing: .16em; text-transform: uppercase; color: var(--fg-muted); margin-top: 8px; }
+  .ask-panel .close {
+    background: transparent; border: 1px solid var(--line-strong); color: var(--fg);
+    width: 36px; height: 36px; border-radius: 50%; cursor: none;
+    font-family: var(--serif); font-size: 18px; line-height: 1;
+  }
+  .ask-panel .close:hover { background: var(--fg); color: var(--cream); border-color: var(--fg); }
+
+  .ask-messages { flex: 1; overflow-y: auto; padding: 22px 28px; display: flex; flex-direction: column; gap: 14px; }
+  .ask-msg { max-width: 85%; padding: 14px 16px; border-radius: 14px; font-size: 14px; line-height: 1.55; font-family: var(--sans); }
+  .ask-msg.user { align-self: flex-end; background: var(--accent); color: var(--cream); border-bottom-right-radius: 4px; }
+  .ask-msg.bot { align-self: flex-start; background: var(--bg-2); color: var(--fg); border-bottom-left-radius: 4px; border: 1px solid var(--line); }
+  .ask-msg.bot .thinking { display: inline-flex; gap: 4px; }
+  .ask-msg.bot .thinking span { width: 6px; height: 6px; background: var(--fg-muted); border-radius: 50%; animation: bounce 1.2s infinite; }
+  .ask-msg.bot .thinking span:nth-child(2) { animation-delay: .15s; }
+  .ask-msg.bot .thinking span:nth-child(3) { animation-delay: .3s; }
+  @keyframes bounce { 0%,60%,100% { transform: translateY(0); opacity: .4 } 30% { transform: translateY(-4px); opacity: 1 } }
+
+  .ask-suggest { display: flex; flex-wrap: wrap; gap: 8px; padding: 0 28px 14px; }
+  .ask-suggest button {
+    background: transparent; color: var(--fg-dim);
+    border: 1px solid var(--line-strong); border-radius: 999px;
+    padding: 8px 14px; font-family: var(--mono); font-size: 10px;
+    cursor: none; text-align: left; transition: all .2s;
+    letter-spacing: .06em;
+  }
+  .ask-suggest button:hover { color: var(--accent); border-color: var(--accent); }
+
+  .ask-input {
+    display: flex; gap: 8px; padding: 18px 28px 26px; border-top: 1px solid var(--line);
+  }
+  .ask-input input {
+    flex: 1; background: var(--bg); border: 1px solid var(--line-strong);
+    border-radius: 12px; padding: 14px 16px; color: var(--fg); font: inherit; outline: none;
+    font-family: var(--sans); font-size: 14px;
+  }
+  .ask-input input:focus { border-color: var(--accent); }
+  .ask-input button {
+    background: var(--fg); color: var(--cream); border: 0;
+    border-radius: 12px; padding: 0 22px;
+    font-family: var(--mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase;
+    cursor: none;
+  }
+
+  /* Terminal overlay — warm CLI (cream on dark charcoal) */
+  .terminal-root {
+    position: fixed; inset: 0; z-index: 5000;
+    background: #2C2825; color: #FAF7F3;
+    font-family: var(--mono); font-size: 14px; padding: 28px;
+    display: none; overflow: auto;
+  }
+  .terminal-root.on { display: block; }
+  .terminal-root pre { color: #A0785A; white-space: pre; line-height: 1.15; }
+  .terminal-root .prompt { color: #A0785A; }
+  .terminal-root .muted { color: #7C756B; }
+  .terminal-root b { color: #C67D5B; font-weight: normal; }
+  .terminal-root input {
+    background: transparent; border: 0; color: #FAF7F3;
+    font: inherit; outline: none; width: 80%;
+    caret-color: #C67D5B;
+  }
+  .terminal-root .prompt-line { display: flex; gap: 8px; align-items: center; margin-top: 8px; }
+  .terminal-root .prompt-line::after {
+    content: '▍'; color: #C67D5B; animation: cursor-blink 1s steps(2) infinite;
+  }
+  @keyframes cursor-blink { 50% { opacity: 0; } }
+
+  /* Tweaks panel */
+  .tweaks {
+    position: fixed; left: 24px; bottom: 24px; z-index: 400;
+    background: var(--cream); border: 1px solid var(--line-strong); border-radius: 16px;
+    padding: 18px 20px; width: 280px; display: none;
+    font-family: var(--mono); font-size: 11px;
+    box-shadow: 0 24px 60px -20px rgba(80, 55, 30, 0.3);
+  }
+  .tweaks.on { display: block; }
+  .tweaks h4 {
+    font-family: var(--mono); font-size: 10px; letter-spacing: .18em;
+    text-transform: uppercase; color: var(--fg-muted); margin-bottom: 16px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .tweaks h4::after { content: '(tweaks)'; color: var(--accent); }
+  .tweaks label { display: block; margin-bottom: 16px; color: var(--fg-dim); }
+  .tweaks label > span { display: block; margin-bottom: 8px; color: var(--fg); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; }
+  .tweaks .swatches { display: flex; gap: 8px; }
+  .tweaks .swatch {
+    width: 26px; height: 26px; border-radius: 50%;
+    border: 2px solid transparent; cursor: none;
+    transition: transform .2s;
+    position: relative;
+  }
+  .tweaks .swatch.active { border-color: var(--fg); }
+  .tweaks .swatch:hover { transform: scale(1.1); }
+  .tweaks .tones { display: flex; gap: 6px; }
+  .tweaks .tone {
+    flex: 1; padding: 10px 6px; border-radius: 8px;
+    border: 1px solid var(--line-strong); background: transparent;
+    font-family: var(--mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase;
+    color: var(--fg-dim); cursor: none;
+    transition: all .2s;
+  }
+  .tweaks .tone.active { background: var(--fg); color: var(--cream); border-color: var(--fg); }
+  .tweaks select {
+    width: 100%; background: var(--bg); color: var(--fg);
+    border: 1px solid var(--line-strong); border-radius: 8px;
+    padding: 8px 10px; font: inherit; cursor: none;
+    font-family: var(--mono); font-size: 11px;
+  }
+  .tweaks .hint { color: var(--fg-muted); font-size: 10px; line-height: 1.5; margin-top: 8px; }
+  .tweaks .hint b { color: var(--accent); }
+</style>
+</head>
+<body>
+  <div class="paper"></div>
+  <div class="vignette"></div>
+  <div id="cursor-dot" class="cursor-dot"></div>
+  <div id="cursor-ring" class="cursor-ring"></div>
+
+  <nav class="nav">
+    <div class="brand">
+      <span class="mark"></span>
+      Fatan Aminullah &mdash; Jakarta
+    </div>
+    <div class="links">
+      <a href="#work" data-cursor="link">Work</a>
+      <a href="#about" data-cursor="link">About</a>
+      <a href="#experience" data-cursor="link">Experience</a>
+      <a href="#contact" data-cursor="link">Contact</a>
+    </div>
+    <div class="clock" id="clock"><span class="pip"></span>JKT &middot; --:--</div>
+  </nav>
+
+  <main id="app"></main>
+
+  <button class="ask-fab" id="askFab" data-cursor="link">
+    <span class="pulse"></span>
+    Ask Fatan
+  </button>
+
+  <aside class="ask-panel" id="askPanel">
+    <header>
+      <div>
+        <h3>Ask <em>Fatan</em></h3>
+        <div class="sub">AI &middot; trained on resume</div>
+      </div>
+      <button class="close" id="askClose" data-cursor="link">&times;</button>
+    </header>
+    <div class="ask-messages" id="askMessages"></div>
+    <div class="ask-suggest" id="askSuggest"></div>
+    <form class="ask-input" id="askForm">
+      <input id="askInput" placeholder="Ask about Fatan's work..." autocomplete="off" />
+      <button type="submit" data-cursor="link">Send</button>
+    </form>
+  </aside>
+
+  <div class="terminal-root" id="terminal">
+    <div id="terminal-history"></div>
+    <div class="prompt-line"><span class="prompt">fatan@portfolio:~$</span> <input id="terminal-input" autofocus /></div>
+  </div>
+
+  <div class="tweaks" id="tweaks">
+    <h4>Earth Palette</h4>
+    <label><span>Accent</span>
+      <div class="swatches" id="swatches">
+        <button class="swatch" data-color="clay"       data-cursor="link" style="background: #A0785A" title="Clay"></button>
+        <button class="swatch" data-color="terracotta" data-cursor="link" style="background: #C67D5B" title="Terracotta"></button>
+        <button class="swatch" data-color="olive"      data-cursor="link" style="background: #6B7C5E" title="Olive"></button>
+        <button class="swatch" data-color="ink"        data-cursor="link" style="background: #3D4A52" title="Ink"></button>
+        <button class="swatch" data-color="plum"       data-cursor="link" style="background: #7A5A6E" title="Plum"></button>
+      </div>
+    </label>
+    <label><span>Tone</span>
+      <div class="tones" id="tones">
+        <button class="tone" data-tone="parchment" data-cursor="link">Parchment</button>
+        <button class="tone" data-tone="sand"      data-cursor="link">Sand</button>
+        <button class="tone" data-tone="linen"     data-cursor="link">Linen</button>
+      </div>
+    </label>
+    <label><span>Cursor</span>
+      <select id="cursorSel">
+        <option value="true">Custom</option>
+        <option value="false">System</option>
+      </select>
+    </label>
+    <div class="hint">Press <b>Ctrl + `</b> for terminal mode.</div>
+  </div>
+
+<!-- libs -->
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
+
+<script src="src-v2/utils.js"></script>
+<script src="src-v2/tweaks.js"></script>
+<script type="text/babel" src="src-v2/hero.jsx"></script>
+<script type="text/babel" src="src-v2/about.jsx"></script>
+<script type="text/babel" src="src-v2/marquee.jsx"></script>
+<script type="text/babel" src="src-v2/works.jsx"></script>
+<script type="text/babel" src="src-v2/experience.jsx"></script>
+<script type="text/babel" src="src-v2/contact.jsx"></script>
+<script type="text/babel" src="src-v2/app.jsx"></script>
+<script src="src-v2/cursor.js"></script>
+<script src="src-v2/ask.js"></script>
+<script src="src-v2/terminal.js"></script>
+</body>
+</html>

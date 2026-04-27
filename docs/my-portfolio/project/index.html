@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Fatan Aminullah — Senior Software Developer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0a;
+    --bg-2: #111111;
+    --bg-3: #151515;
+    --fg: #EDE6DA;
+    --fg-dim: #9A968C;
+    --fg-muted: #5E5B55;
+    --line: rgba(237, 230, 218, 0.09);
+    --line-strong: rgba(237, 230, 218, 0.18);
+    --accent: oklch(64% 0.22 268);
+    --accent-dim: oklch(64% 0.22 268 / 0.18);
+    --serif: 'Instrument Serif', 'Times New Roman', serif;
+    --sans: 'Geist', ui-sans-serif, system-ui, sans-serif;
+    --mono: 'Geist Mono', ui-monospace, 'SF Mono', monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--bg); color: var(--fg); font-family: var(--sans); -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+  body { overflow-x: hidden; cursor: none; }
+  @media (hover: none) { body { cursor: auto; } }
+  a { color: inherit; text-decoration: none; }
+  ::selection { background: var(--accent); color: var(--bg); }
+
+  /* Film grain */
+  .grain {
+    position: fixed; inset: 0; pointer-events: none; z-index: 9999;
+    opacity: 0.06; mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.9'/></svg>");
+  }
+
+  /* Custom cursor */
+  .cursor-dot, .cursor-ring {
+    position: fixed; top: 0; left: 0; pointer-events: none; z-index: 10000;
+    transform: translate(-50%, -50%);
+    mix-blend-mode: difference;
+  }
+  .cursor-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--fg); transition: transform .15s ease, opacity .2s; }
+  .cursor-ring { width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--fg); transition: width .25s cubic-bezier(.2,.8,.2,1), height .25s cubic-bezier(.2,.8,.2,1), opacity .2s; }
+  .cursor-ring[data-variant="link"] { width: 70px; height: 70px; border-color: var(--accent); }
+  .cursor-ring[data-variant="image"] { width: 110px; height: 110px; border-color: var(--fg); }
+  .cursor-ring[data-variant="image"]::after { content: 'view'; position: absolute; inset: 0; display: grid; place-items: center; font-family: var(--mono); font-size: 10px; color: var(--fg); letter-spacing: .1em; text-transform: uppercase; }
+  .cursor-ring[data-variant="tech"] { width: 70px; height: 70px; border-color: var(--accent); }
+  .cursor-ring[data-variant="tech"]::after { content: '</>'; position: absolute; inset: 0; display: grid; place-items: center; font-family: var(--mono); font-size: 11px; color: var(--accent); }
+  @media (hover: none) { .cursor-dot, .cursor-ring { display: none; } }
+
+  /* Nav */
+  .nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 22px 40px; font-family: var(--mono); font-size: 12px; letter-spacing: .06em;
+    text-transform: uppercase;
+    mix-blend-mode: difference;
+  }
+  .nav .brand { color: var(--fg); }
+  .nav .brand b { font-weight: 500; }
+  .nav .links { display: flex; gap: 28px; }
+  .nav .links a { opacity: .7; transition: opacity .2s; }
+  .nav .links a:hover { opacity: 1; }
+  .nav .clock { font-variant-numeric: tabular-nums; opacity: .7; }
+  @media (max-width: 720px) { .nav { padding: 16px 20px; } .nav .links, .nav .clock { display: none; } }
+
+  /* Sections */
+  section { position: relative; }
+  .container { max-width: 1440px; margin: 0 auto; padding: 0 40px; }
+  @media (max-width: 720px) { .container { padding: 0 20px; } }
+
+  /* Reveal primitives */
+  .reveal-line { display: block; overflow: hidden; }
+  .reveal-line > span { display: inline-block; transform: translateY(105%); transition: transform 1.1s cubic-bezier(.2,.8,.2,1); }
+  .reveal-line.in > span { transform: translateY(0); }
+  .reveal-word { display: inline-block; overflow: hidden; vertical-align: baseline; }
+  .reveal-word > span { display: inline-block; transform: translateY(105%); transition: transform .9s cubic-bezier(.2,.8,.2,1); }
+  .reveal-word.in > span { transform: translateY(0); }
+  .reveal-fade { opacity: 0; transform: translateY(14px); transition: opacity 1s ease, transform 1s cubic-bezier(.2,.8,.2,1); }
+  .reveal-fade.in { opacity: 1; transform: none; }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 0; height: 0; }
+  html { scrollbar-width: none; }
+
+  /* Shared button */
+  .btn {
+    display: inline-flex; align-items: center; gap: 12px;
+    padding: 14px 22px; border: 1px solid var(--line-strong); border-radius: 999px;
+    font-family: var(--mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--fg); background: transparent; cursor: none;
+    transition: background .3s, color .3s, border-color .3s;
+  }
+  .btn:hover { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+  .btn .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+
+  /* Terminal overlay */
+  .terminal-root {
+    position: fixed; inset: 0; z-index: 5000; background: #000; color: #7CFF9E;
+    font-family: var(--mono); font-size: 14px; padding: 24px;
+    display: none; overflow: auto;
+  }
+  .terminal-root.on { display: block; }
+  .terminal-root pre { color: #5FE08A; white-space: pre; line-height: 1.2; }
+  .terminal-root .prompt { color: #7CFF9E; }
+  .terminal-root .muted { color: #3a8a52; }
+  .terminal-root input { background: transparent; border: 0; color: #EDE6DA; font: inherit; outline: none; width: 80%; caret-color: #7CFF9E; }
+
+  /* Ask Fatan panel */
+  .ask-fab {
+    position: fixed; right: 28px; bottom: 28px; z-index: 200;
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 14px 20px 14px 16px;
+    background: var(--fg); color: var(--bg);
+    border-radius: 999px; font-family: var(--mono); font-size: 12px; letter-spacing: .06em; text-transform: uppercase;
+    cursor: none; box-shadow: 0 20px 60px rgba(0,0,0,.5);
+    transition: transform .3s cubic-bezier(.2,.8,.2,1);
+  }
+  .ask-fab:hover { transform: translateY(-2px); }
+  .ask-fab .pulse { position: relative; width: 10px; height: 10px; border-radius: 50%; background: var(--accent); }
+  .ask-fab .pulse::after { content:''; position:absolute; inset:-6px; border-radius:50%; border:1px solid var(--accent); animation: pulse 1.8s ease-out infinite; }
+  @keyframes pulse { 0% { transform: scale(.6); opacity: 1 } 100% { transform: scale(1.4); opacity: 0 } }
+
+  .ask-panel {
+    position: fixed; top: 0; right: 0; bottom: 0; width: min(460px, 92vw);
+    background: var(--bg-2); border-left: 1px solid var(--line);
+    transform: translateX(100%); transition: transform .6s cubic-bezier(.77,0,.175,1);
+    z-index: 300; display: flex; flex-direction: column;
+  }
+  .ask-panel.on { transform: translateX(0); }
+  .ask-panel header { padding: 22px 24px 18px; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; }
+  .ask-panel header h3 { font-family: var(--serif); font-size: 30px; font-weight: 400; letter-spacing: -.01em; }
+  .ask-panel header .sub { font-family: var(--mono); font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--fg-dim); margin-top: 4px; }
+  .ask-panel .close { background: transparent; border: 1px solid var(--line-strong); color: var(--fg); width: 36px; height: 36px; border-radius: 50%; cursor: none; font-family: var(--mono); }
+  .ask-messages { flex: 1; overflow-y: auto; padding: 20px 24px; display: flex; flex-direction: column; gap: 14px; }
+  .ask-msg { max-width: 85%; padding: 12px 14px; border-radius: 14px; font-size: 14px; line-height: 1.55; }
+  .ask-msg.user { align-self: flex-end; background: var(--accent); color: #fff; border-bottom-right-radius: 4px; }
+  .ask-msg.bot { align-self: flex-start; background: var(--bg-3); color: var(--fg); border-bottom-left-radius: 4px; border: 1px solid var(--line); }
+  .ask-msg.bot .thinking { display: inline-flex; gap: 4px; }
+  .ask-msg.bot .thinking span { width: 6px; height: 6px; background: var(--fg-dim); border-radius: 50%; animation: bounce 1.2s infinite; }
+  .ask-msg.bot .thinking span:nth-child(2) { animation-delay: .15s; }
+  .ask-msg.bot .thinking span:nth-child(3) { animation-delay: .3s; }
+  @keyframes bounce { 0%,60%,100% { transform: translateY(0); opacity: .4 } 30% { transform: translateY(-4px); opacity: 1 } }
+  .ask-suggest { display: flex; flex-wrap: wrap; gap: 8px; padding: 0 24px 14px; }
+  .ask-suggest button { background: transparent; color: var(--fg-dim); border: 1px solid var(--line); border-radius: 999px; padding: 8px 12px; font-family: var(--mono); font-size: 11px; cursor: none; text-align: left; transition: all .2s; }
+  .ask-suggest button:hover { color: var(--fg); border-color: var(--line-strong); }
+  .ask-input { display: flex; gap: 8px; padding: 18px 24px 22px; border-top: 1px solid var(--line); }
+  .ask-input input { flex: 1; background: var(--bg-3); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; color: var(--fg); font: inherit; outline: none; }
+  .ask-input input:focus { border-color: var(--accent); }
+  .ask-input button { background: var(--fg); color: var(--bg); border: 0; border-radius: 12px; padding: 0 18px; font-family: var(--mono); font-size: 12px; letter-spacing: .06em; text-transform: uppercase; cursor: none; }
+
+  /* Tweaks panel */
+  .tweaks {
+    position: fixed; right: 20px; bottom: 100px; z-index: 400;
+    background: var(--bg-2); border: 1px solid var(--line-strong); border-radius: 16px;
+    padding: 16px 18px; width: 260px; display: none;
+    font-family: var(--mono); font-size: 11px;
+  }
+  .tweaks.on { display: block; }
+  .tweaks h4 { font-family: var(--mono); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--fg-dim); margin-bottom: 12px; }
+  .tweaks label { display: block; margin-bottom: 12px; color: var(--fg-dim); }
+  .tweaks label span { display: block; margin-bottom: 6px; color: var(--fg); }
+  .tweaks .swatches { display: flex; gap: 8px; }
+  .tweaks .swatch { width: 26px; height: 26px; border-radius: 50%; border: 2px solid transparent; cursor: none; transition: transform .2s; }
+  .tweaks .swatch.active { border-color: var(--fg); }
+  .tweaks .swatch:hover { transform: scale(1.1); }
+  .tweaks select, .tweaks input[type=range] { width: 100%; background: var(--bg-3); color: var(--fg); border: 1px solid var(--line); border-radius: 8px; padding: 6px 8px; font: inherit; cursor: none; }
+</style>
+<script type="application/json" id="tweak-defaults">
+{
+  "accent": "indigo",
+  "terminal": false,
+  "cursor": true
+}
+</script>
+</head>
+<body>
+  <div class="grain"></div>
+  <div id="cursor-dot" class="cursor-dot"></div>
+  <div id="cursor-ring" class="cursor-ring"></div>
+
+  <nav class="nav">
+    <div class="brand">Fatan <b>Aminullah</b> — ID</div>
+    <div class="links">
+      <a href="#work" data-cursor="link">Work</a>
+      <a href="#about" data-cursor="link">About</a>
+      <a href="#experience" data-cursor="link">Experience</a>
+      <a href="#contact" data-cursor="link">Contact</a>
+    </div>
+    <div class="clock" id="clock">JKT · --:--</div>
+  </nav>
+
+  <main id="app"></main>
+
+  <button class="ask-fab" id="askFab" data-cursor="link">
+    <span class="pulse"></span>
+    Ask Fatan
+  </button>
+
+  <aside class="ask-panel" id="askPanel">
+    <header>
+      <div>
+        <h3>Ask Fatan</h3>
+        <div class="sub">AI · Trained on resume</div>
+      </div>
+      <button class="close" id="askClose" data-cursor="link">×</button>
+    </header>
+    <div class="ask-messages" id="askMessages"></div>
+    <div class="ask-suggest" id="askSuggest"></div>
+    <form class="ask-input" id="askForm">
+      <input id="askInput" placeholder="Ask anything…" autocomplete="off" />
+      <button type="submit" data-cursor="link">Send</button>
+    </form>
+  </aside>
+
+  <div class="terminal-root" id="terminal">
+    <div id="terminal-history"></div>
+    <div class="prompt-line"><span class="prompt">fatan@portfolio:~$</span> <input id="terminal-input" autofocus /></div>
+  </div>
+
+  <div class="tweaks" id="tweaks">
+    <h4>Tweaks</h4>
+    <label><span>Accent</span>
+      <div class="swatches" id="swatches">
+        <button class="swatch" data-color="indigo" style="background: oklch(64% 0.22 268)"></button>
+        <button class="swatch" data-color="cyan" style="background: oklch(72% 0.15 210)"></button>
+        <button class="swatch" data-color="amber" style="background: oklch(75% 0.17 70)"></button>
+        <button class="swatch" data-color="crimson" style="background: oklch(62% 0.22 20)"></button>
+        <button class="swatch" data-color="lime" style="background: oklch(82% 0.19 135)"></button>
+      </div>
+    </label>
+    <label><span>Cursor</span>
+      <select id="cursorSel">
+        <option value="true">Custom</option>
+        <option value="false">System</option>
+      </select>
+    </label>
+    <label><span>Ctrl+` toggles Terminal Mode</span></label>
+  </div>
+
+<!-- libs -->
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
+
+<script src="src/utils.js"></script>
+<script type="text/babel" src="src/hero.jsx"></script>
+<script type="text/babel" src="src/about.jsx"></script>
+<script type="text/babel" src="src/marquee.jsx"></script>
+<script type="text/babel" src="src/works.jsx"></script>
+<script type="text/babel" src="src/experience.jsx"></script>
+<script type="text/babel" src="src/contact.jsx"></script>
+<script type="text/babel" src="src/app.jsx"></script>
+<script src="src/cursor.js"></script>
+<script src="src/ask.js"></script>
+<script src="src/terminal.js"></script>
+<script src="src/tweaks.js"></script>
+</body>
+</html>
