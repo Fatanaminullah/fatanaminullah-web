@@ -1,0 +1,37 @@
+.dot, .ring {
+  position: fixed; top: 0; left: 0; pointer-events: none; z-index: 10000;
+  transform: translate(-50%, -50%);
+}
+
+.dot {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: var(--accent);
+  transition: transform .15s ease, opacity .2s;
+}
+
+.ring {
+  width: 28px; height: 28px; border-radius: 50%;
+  border: 1px solid var(--accent);
+  transition: width .35s cubic-bezier(.2,.8,.2,1), height .35s cubic-bezier(.2,.8,.2,1), border-color .3s, background .3s, opacity .2s;
+}
+
+.ring[data-variant="link"] { width: 56px; height: 56px; background: color-mix(in oklab, var(--accent) 12%, transparent); }
+.ring[data-variant="image"] { width: 88px; height: 88px; background: color-mix(in oklab, var(--accent) 18%, transparent); }
+.ring[data-variant="image"]::after {
+  content: 'view'; position: absolute; inset: 0; display: grid; place-items: center;
+  font-family: var(--mono); font-size: 10px; color: var(--fg); letter-spacing: .14em; text-transform: uppercase;
+}
+
+.ring[data-variant="prev"], .ring[data-variant="next"] {
+  width: 84px; height: 84px;
+  background: var(--fg); border-color: var(--fg);
+}
+.ring[data-variant="prev"]::after, .ring[data-variant="next"]::after {
+  position: absolute; inset: 0; display: grid; place-items: center;
+  font-family: var(--serif); font-style: italic; font-size: 38px;
+  color: var(--cream); line-height: 1;
+}
+.ring[data-variant="prev"]::after { content: '←'; }
+.ring[data-variant="next"]::after { content: '→'; }
+
+@media (hover: none) { .dot, .ring { display: none; } }

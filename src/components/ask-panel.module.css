@@ -1,0 +1,115 @@
+.fab {
+  position: fixed; right: 28px; bottom: 28px; z-index: 200;
+  display: inline-flex; align-items: center; gap: 12px;
+  padding: 14px 22px 14px 18px;
+  background: var(--accent); color: var(--cream);
+  border: 0; border-radius: 999px;
+  font-family: var(--mono); font-size: 11px; letter-spacing: .14em; text-transform: uppercase;
+  cursor: none;
+  box-shadow: 0 16px 40px -10px rgba(80, 55, 30, 0.4);
+  transition: transform .4s cubic-bezier(.2,.8,.2,1);
+}
+.fab:hover { transform: translateY(-3px); }
+
+.pulse {
+  position: relative; width: 8px; height: 8px; border-radius: 50%;
+  background: var(--cream);
+}
+.pulse::after {
+  content: ''; position: absolute; inset: -5px; border-radius: 50%;
+  border: 1px solid var(--cream);
+  animation: ask-pulse 1.8s ease-out infinite;
+}
+
+.panel {
+  position: fixed; top: 0; right: 0; bottom: 0; width: min(460px, 92vw);
+  background: var(--cream);
+  border-left: 1px solid var(--line-strong);
+  box-shadow: -40px 0 80px -30px rgba(80, 55, 30, 0.25);
+  transform: translateX(100%);
+  transition: transform .6s cubic-bezier(.77,0,.175,1);
+  z-index: 300; display: flex; flex-direction: column;
+}
+.panelOn { transform: translateX(0); }
+
+.header {
+  padding: 26px 28px 22px; border-bottom: 1px solid var(--line);
+  display: flex; justify-content: space-between; align-items: flex-start;
+}
+.header h3 {
+  font-family: var(--serif); font-size: 34px; font-weight: 400;
+  letter-spacing: -.02em; line-height: 1;
+}
+.header h3 em { color: var(--accent); }
+.sub {
+  font-family: var(--mono); font-size: 10px; letter-spacing: .16em;
+  text-transform: uppercase; color: var(--fg-muted); margin-top: 8px;
+}
+.close {
+  background: transparent; border: 1px solid var(--line-strong); color: var(--fg);
+  width: 36px; height: 36px; border-radius: 50%; cursor: none;
+  font-family: var(--serif); font-size: 18px; line-height: 1;
+}
+.close:hover { background: var(--fg); color: var(--cream); border-color: var(--fg); }
+
+.messages { flex: 1; overflow-y: auto; padding: 22px 28px; display: flex; flex-direction: column; gap: 14px; }
+
+.msg {
+  max-width: 85%; padding: 14px 16px; border-radius: 14px;
+  font-size: 14px; line-height: 1.55; font-family: var(--sans);
+}
+.msgUser {
+  align-self: flex-end; background: var(--accent); color: var(--cream);
+  border-bottom-right-radius: 4px;
+}
+.msgBot {
+  align-self: flex-start; background: var(--bg-2); color: var(--fg);
+  border-bottom-left-radius: 4px; border: 1px solid var(--line);
+}
+
+.thinking { display: inline-flex; gap: 4px; }
+.thinking span {
+  width: 6px; height: 6px; background: var(--fg-muted); border-radius: 50%;
+  animation: bounce 1.2s infinite;
+}
+.thinking span:nth-child(2) { animation-delay: .15s; }
+.thinking span:nth-child(3) { animation-delay: .3s; }
+
+.suggest { display: flex; flex-wrap: wrap; gap: 8px; padding: 0 28px 14px; }
+.suggest button {
+  background: transparent; color: var(--fg-dim);
+  border: 1px solid var(--line-strong); border-radius: 999px;
+  padding: 8px 14px; font-family: var(--mono); font-size: 10px;
+  cursor: none; text-align: left; transition: all .2s; letter-spacing: .06em;
+}
+.suggest button:hover { color: var(--accent); border-color: var(--accent); }
+
+.inputRow {
+  display: flex; gap: 8px; padding: 18px 28px 26px; border-top: 1px solid var(--line);
+}
+.inputRow input {
+  flex: 1; background: var(--bg); border: 1px solid var(--line-strong);
+  border-radius: 12px; padding: 14px 16px; color: var(--fg); font: inherit; outline: none;
+  font-family: var(--sans); font-size: 14px;
+}
+.inputRow input:focus { border-color: var(--accent); }
+.inputRow button {
+  background: var(--fg); color: var(--cream); border: 0;
+  border-radius: 12px; padding: 0 22px;
+  font-family: var(--mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase;
+  cursor: none;
+}
+
+@media (max-width: 720px) {
+  .fab {
+    right: 16px; bottom: 16px;
+    padding: 12px 18px 12px 16px; font-size: 10px; letter-spacing: .12em;
+    box-shadow: 0 12px 28px -12px rgba(80, 55, 30, 0.5);
+  }
+  .pulse { width: 6px; height: 6px; }
+  .panel { width: 100vw; }
+  .header { padding: 18px 20px 16px; }
+  .header h3 { font-size: 24px; }
+  .messages { padding: 16px 20px; }
+  .inputRow { padding: 14px 16px 18px; }
+}

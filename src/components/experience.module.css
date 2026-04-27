@@ -1,0 +1,91 @@
+.experience { padding: 180px 40px 160px; position: relative; }
+
+.head {
+  max-width: 1280px; margin: 0 auto 90px;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: end;
+}
+.label {
+  display: flex; align-items: center; gap: 12px;
+  font-family: var(--mono); font-size: 11px; letter-spacing: .18em; text-transform: uppercase;
+  color: var(--fg-dim); margin-bottom: 28px;
+}
+.label::before { content: ''; width: 40px; height: 1px; background: var(--fg-muted); }
+
+.experience h2 {
+  font-family: var(--serif); font-weight: 400;
+  font-size: clamp(64px, 9vw, 140px); line-height: 0.9; letter-spacing: -0.04em;
+}
+.experience h2 em { font-style: italic; color: var(--accent); }
+
+.caption {
+  font-family: var(--serif); font-size: 18px; line-height: 1.55; color: var(--fg-dim);
+  max-width: 42ch; font-style: italic;
+}
+
+.timeline {
+  position: relative; max-width: 1080px; margin: 0 auto; padding-left: 80px;
+}
+.spine {
+  position: absolute; left: 20px; top: 0; bottom: 0;
+  width: 1px; background: var(--line);
+}
+.draw {
+  position: absolute; left: 20px; top: 0;
+  width: 1px; background: var(--accent); transform-origin: top;
+}
+
+.entry {
+  position: relative;
+  display: grid; grid-template-columns: 1fr 1.2fr; gap: 48px;
+  padding: 36px 0 60px;
+}
+.entry::before {
+  content: ''; position: absolute; left: -64px; top: 52px;
+  width: 12px; height: 12px; border-radius: 50%;
+  background: var(--bg); border: 2px solid var(--accent);
+  transition: transform .4s, background .3s;
+}
+.done::before { background: var(--accent); }
+.active::before { transform: scale(1.4); box-shadow: 0 0 0 6px color-mix(in oklab, var(--accent) 20%, transparent); }
+
+.entryLeft { display: flex; flex-direction: column; gap: 6px; }
+.co {
+  font-family: var(--serif); font-size: clamp(36px, 4.5vw, 64px);
+  line-height: 1; letter-spacing: -0.025em; color: var(--fg);
+  font-variation-settings: 'opsz' 144;
+}
+.role { font-family: var(--sans); font-size: 15px; color: var(--fg-dim); letter-spacing: 0.01em; }
+.range {
+  font-family: var(--mono); font-size: 10px; letter-spacing: .18em; text-transform: uppercase;
+  color: var(--fg-muted); margin-top: 10px;
+}
+.where {
+  font-family: var(--mono); font-size: 10px; letter-spacing: .18em; text-transform: uppercase;
+  color: var(--fg-muted); margin-top: 4px;
+}
+
+.entry ul { list-style: none; display: flex; flex-direction: column; gap: 14px; padding: 8px 0 0; }
+.entry ul li {
+  position: relative; padding-left: 22px;
+  font-family: var(--serif); font-size: 19px; line-height: 1.55;
+  color: var(--fg); letter-spacing: -0.003em;
+}
+.entry ul li::before {
+  content: ''; position: absolute; left: 0; top: 12px;
+  width: 10px; height: 1px; background: var(--accent);
+}
+
+@media (max-width: 900px) {
+  .experience { padding: 100px 20px 80px; }
+  .head { grid-template-columns: 1fr; gap: 24px; margin-bottom: 50px; }
+  .caption { font-size: 15px; }
+  .timeline { padding-left: 36px; }
+  .spine, .draw { left: 8px; }
+  .entry { grid-template-columns: 1fr; gap: 14px; padding: 24px 0 32px; }
+  .entry::before { left: -32px; top: 36px; width: 10px; height: 10px; }
+  .co { font-size: clamp(28px, 7vw, 40px); }
+  .role { font-size: 13px; }
+  .entry ul { gap: 10px; }
+  .entry ul li { font-size: 15px; padding-left: 18px; }
+  .entry ul li::before { width: 8px; top: 11px; }
+}
