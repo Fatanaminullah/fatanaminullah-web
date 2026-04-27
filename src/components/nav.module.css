@@ -3,6 +3,16 @@
   display: grid; grid-template-columns: 1fr auto 1fr; align-items: center;
   padding: 26px 40px; font-family: var(--mono); font-size: 11px; letter-spacing: .12em;
   text-transform: uppercase;
+  transition:
+    background-color 0.35s ease,
+    border-color 0.35s ease,
+    box-shadow 0.35s ease;
+}
+
+.navSolid {
+  background-color: var(--bg);
+  border-bottom: 1px solid var(--line);
+  box-shadow: 0 12px 40px -28px rgba(44, 40, 37, 0.25);
 }
 
 .brand { color: var(--fg); display: flex; align-items: center; gap: 10px; }

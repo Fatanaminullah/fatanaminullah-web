@@ -3,8 +3,20 @@
 import { useEffect, useState } from "react";
 import styles from "./nav.module.css";
 
+const SCROLL_THRESHOLD_PX = 32;
+
 export default function Nav() {
   const [time, setTime] = useState("--:--");
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    function onScroll() {
+      setScrolled(window.scrollY > SCROLL_THRESHOLD_PX);
+    }
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   useEffect(() => {
     function tick() {
@@ -22,7 +34,7 @@ export default function Nav() {
   }, []);
 
   return (
-    <nav className={styles.nav}>
+    <nav className={`${styles.nav} ${scrolled ? styles.navSolid : ""}`}>
       <div className={styles.brand}>
         <span className={styles.mark} />
         Fatan Aminullah &mdash; Jakarta

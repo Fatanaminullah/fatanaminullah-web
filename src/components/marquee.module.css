@@ -23,8 +23,20 @@
   will-change: transform;
   padding: 16px 0;
 }
-.rowA { animation: slide-left 48s linear infinite; }
-.rowB { animation: slide-right 56s linear infinite; }
+
+/* Keyframes live in this module so names hash correctly with `animation:` (globals alone won't match). */
+@keyframes marquee-slide-left {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+@keyframes marquee-slide-right {
+  from { transform: translateX(-50%); }
+  to { transform: translateX(0); }
+}
+
+.rowA { animation: marquee-slide-left 22s linear infinite; }
+.rowB { animation: marquee-slide-right 26s linear infinite; }
 
 .item {
   display: inline-flex; align-items: center; gap: 22px;
@@ -56,6 +68,6 @@
   .eye::before, .eye::after { width: 24px; }
   .item { font-size: clamp(28px, 9vw, 56px); padding: 0 18px; gap: 16px; }
   .sep { width: 7px; height: 7px; }
-  .rowA { animation-duration: 32s; }
-  .rowB { animation-duration: 38s; }
+  .rowA { animation-duration: 15s; }
+  .rowB { animation-duration: 18s; }
 }
