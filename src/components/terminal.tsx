@@ -24,7 +24,7 @@ const COMMANDS: Record<string, (toggle: () => void) => string> = {
   clear       wipe terminal
   help        this list`,
 
-  about: () => `Fatan Aminullah · Senior Software Developer · Jakarta, ID
+  about: () => `Fatan Aminullah · Engineer · Jakarta, ID
 Six years building web experiences across corporate, e-commerce, and loyalty platforms.
 Currently senior frontend at Antikode.`,
 

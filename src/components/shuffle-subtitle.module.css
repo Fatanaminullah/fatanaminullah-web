@@ -1,0 +1,43 @@
+.root {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+.shuffle {
+  margin: 0;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.32em;
+  line-height: 1.45;
+  text-transform: uppercase;
+  color: var(--fg);
+  min-height: 2.75em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-width: min(96vw, 52rem);
+}
+
+.visuallyHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (max-width: 900px) {
+  .shuffle {
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    min-height: 3em;
+    padding-inline: 8px;
+  }
+}

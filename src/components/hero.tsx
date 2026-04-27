@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import Image from "next/image";
+import ShuffleSubtitle from "@/components/shuffle-subtitle";
 import styles from "./hero.module.css";
 
 export default function Hero() {
@@ -91,8 +92,8 @@ export default function Hero() {
               Fatan <em>Aminullah</em>
             </span>
           </h1>
-          <div className={`${styles.subtitle} reveal-fade`} data-delay="0.6">
-            Senior &middot; Software &middot; Developer
+          <div className={`${styles.subtitleWrap} reveal-fade`} data-delay="0.6">
+            <ShuffleSubtitle />
           </div>
           <div className={`${styles.tagline} reveal-fade`} data-delay="0.75">
             crafting high-performance digital experiences from Jakarta.
@@ -100,24 +101,26 @@ export default function Hero() {
         </div>
       </div>
 
-      <div
-        className={`${styles.meta} ${styles.metaBl} reveal-fade`}
-        data-delay="0.9"
-      >
-        <span className={styles.globe} />
-        Jakarta, Indonesia &middot; 6&deg;S
-      </div>
-      <div
-        className={`${styles.meta} ${styles.metaBr} reveal-fade`}
-        data-delay="0.9"
-      >
-        <span className={styles.dot} />
-        Available Q2 &rsquo;26
-      </div>
-
-      <div className={`${styles.scroll} reveal-fade`} data-delay="1">
-        <span>Scroll</span>
-        <span className={styles.scrollLine} />
+      <div className={styles.heroFoot}>
+        <div
+          className={`${styles.meta} ${styles.metaBl} reveal-fade`}
+          data-delay="0.9"
+        >
+          <span className={styles.globe} />
+          Jakarta, Indonesia &middot; 6&deg;S
+        </div>
+        <div className={`${styles.scroll} reveal-fade`} data-delay="1">
+          <span>Scroll</span>
+          <span className={styles.scrollLine} />
+        </div>
+        <div
+          className={`${styles.meta} ${styles.metaBr} reveal-fade`}
+          data-delay="0.9"
+          title="Open for new roles or projects starting Q2 (Apr–Jun) 2026"
+        >
+          <span className={styles.dot} />
+          Available Q2 &rsquo;26
+        </div>
       </div>
     </section>
   );
