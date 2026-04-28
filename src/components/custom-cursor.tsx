@@ -3,15 +3,6 @@
 import { useEffect, useRef } from "react";
 import styles from "./custom-cursor.module.css";
 
-function readCursorPref(): boolean {
-  try {
-    const s = JSON.parse(localStorage.getItem("fatan-v2-tweaks") || "{}");
-    return typeof s.cursor === "boolean" ? s.cursor : true;
-  } catch {
-    return true;
-  }
-}
-
 export default function CustomCursor() {
   const dotRef = useRef<HTMLDivElement>(null);
   const lagRef = useRef<HTMLDivElement>(null);
@@ -30,15 +21,8 @@ export default function CustomCursor() {
       return;
     }
 
-    function applyCustomVisibility() {
-      const enabled = readCursorPref();
-      const show = enabled;
-      dotEl!.style.display = lagEl!.style.display = show ? "" : "none";
-      document.body.style.cursor = show ? "none" : "auto";
-      return show;
-    }
-
-    applyCustomVisibility();
+    dotEl.style.display = lagEl.style.display = "";
+    document.body.style.cursor = "none";
 
     let x = innerWidth / 2,
       y = innerHeight / 2;
@@ -78,18 +62,9 @@ export default function CustomCursor() {
     }
     document.addEventListener("mouseover", onOver);
 
-    function onCursorPrefChanged() {
-      applyCustomVisibility();
-    }
-    window.addEventListener("fatan-cursor-pref-changed", onCursorPrefChanged);
-
     return () => {
       window.removeEventListener("mousemove", onMove);
       document.removeEventListener("mouseover", onOver);
-      window.removeEventListener(
-        "fatan-cursor-pref-changed",
-        onCursorPrefChanged,
-      );
       cancelAnimationFrame(raf);
       document.body.style.cursor = "";
     };

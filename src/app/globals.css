@@ -39,8 +39,8 @@ h1, h2, h3,
   font-variation-settings: 'opsz' 144;
 }
 
-body { overflow-x: hidden; cursor: none; }
-@media (hover: none) { body { cursor: auto; } }
+body { overflow-x: hidden; cursor: auto; }
+/* Custom cursor component sets cursor: none while active on pointer devices. */
 
 a { color: inherit; text-decoration: none; }
 ::selection { background: var(--accent); color: var(--cream); }

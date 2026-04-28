@@ -24,9 +24,9 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Fatan Aminullah — Frontend · Engineering · Analysis",
+  title: "Fatan Aminullah — Coming Soon",
   description:
-    "Portfolio of Fatan Aminullah — frontend development, software engineering, full-stack delivery, and systems analysis from Jakarta.",
+    "The portfolio of Fatan Aminullah is being tuned for launch. Frontend development, systems thinking, and digital craft.",
 };
 
 export default function RootLayout({
