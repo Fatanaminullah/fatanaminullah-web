@@ -62,7 +62,6 @@ export default function Hero() {
               className={`${styles.tick} ${i % 6 === 0 ? styles.tickLg : ""}`}
               style={{
                 transform: `translateX(-50%) rotate(${i * 15}deg)`,
-                transformOrigin: "50% 50vmin",
               }}
             />
           ))}
