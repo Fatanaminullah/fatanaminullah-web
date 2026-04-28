@@ -1,0 +1,11 @@
+# Next.js on Netlify: output lives in `.next`, not `build`.
+# Overrides any Netlify UI "Publish directory" set to `build` (Create React App default).
+#
+# Docs: https://docs.netlify.com/frameworks/next-js/overview/
+
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
