@@ -10,7 +10,7 @@ export default function ComingSoon() {
       <header className={styles.nav} aria-label="Site status">
         <a
           className={styles.brand}
-          href="mailto:hello@fatanaminullah.com"
+          href="mailto:fatan.aminullah.j@gmail.com"
           data-cursor="link"
           aria-label="Fatan Aminullah"
         >
@@ -63,7 +63,7 @@ export default function ComingSoon() {
             assembled.
           </p>
           <div className={styles.actions} aria-label="Contact links">
-            <a href="mailto:hello@fatanaminullah.com" data-cursor="link">
+            <a href="mailto:fatan.aminullah.j@gmail.com" data-cursor="link">
               Discuss a project
               <span aria-hidden="true">-&gt;</span>
             </a>
