@@ -1,0 +1,311 @@
+.hero {
+  position: relative;
+  box-sizing: border-box;
+  /* Exact viewport height — footer pinned absolutely so content height never pushes it off-screen. */
+  height: 100vh;
+  height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  overflow: visible;
+  padding: 0 40px 0;
+  background: linear-gradient(
+    180deg,
+    color-mix(in oklab, var(--accent) 10%, var(--bg)) 0%,
+    color-mix(in oklab, var(--accent) 5%, var(--bg)) 34%,
+    var(--bg) 52%,
+    var(--bg) 100%
+  );
+}
+
+.sunWrap {
+  position: absolute;
+  left: 50%; top: 55%;
+  transform: translate(-50%, -50%);
+  width: min(78vmin, 640px);
+  aspect-ratio: 1;
+  pointer-events: none;
+  z-index: 1;
+  will-change: transform;
+  transition: transform 1.2s cubic-bezier(.2,.8,.2,1);
+  /* Lets tick marks use cqh so rotation pivots at the true center of this square. */
+  container-type: size;
+}
+
+.disc {
+  position: absolute; inset: 14%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 50%, color-mix(in oklab, var(--accent) 35%, var(--bg)) 0%, color-mix(in oklab, var(--accent) 18%, var(--bg)) 55%, transparent 72%);
+  opacity: 0.9;
+}
+
+.ring {
+  position: absolute; inset: 0;
+  border-radius: 50%;
+  border: 1px solid var(--accent);
+  opacity: 0.25;
+}
+.r2 { inset: 8%; opacity: 0.18; }
+.r3 { inset: 16%; opacity: 0.12; }
+
+.ticks {
+  position: absolute; inset: 0;
+  animation: rotate 120s linear infinite;
+}
+
+.tick {
+  position: absolute; left: 50%; top: 0;
+  width: 1px; height: 10px;
+  background: var(--accent); opacity: 0.4;
+  /* 50vmin matched the viewport, not this box — use half of sunWrap height. */
+  transform-origin: 50% 50cqh;
+}
+.tickLg { height: 18px; opacity: 0.65; width: 1px; }
+
+@keyframes rotate { to { transform: rotate(360deg); } }
+
+.meridian {
+  position: absolute; inset: 0;
+  border-radius: 50%;
+  background:
+    linear-gradient(90deg, transparent calc(50% - 0.5px), color-mix(in oklab, var(--accent) 30%, transparent) calc(50% - 0.5px) calc(50% + 0.5px), transparent calc(50% + 0.5px));
+  mask: radial-gradient(circle, black 60%, transparent 62%);
+  -webkit-mask: radial-gradient(circle, black 60%, transparent 62%);
+  opacity: 0.3;
+}
+
+.coordTl, .coordBr, .coordL, .coordR {
+  position: absolute;
+  font-family: var(--mono); font-size: 9px; letter-spacing: .18em; text-transform: uppercase;
+  color: var(--accent); opacity: 0.6;
+}
+.coordTl { top: 2%; left: 50%; transform: translateX(-50%); }
+.coordBr { bottom: 2%; left: 50%; transform: translateX(-50%); }
+.coordL { left: 2%; top: 50%; transform: translateY(-50%) rotate(-90deg); transform-origin: 0 0; }
+.coordR { right: 2%; top: 50%; transform: translateY(-50%) rotate(90deg); transform-origin: 100% 0; }
+
+.stage {
+  position: relative; z-index: 2;
+  display: flex; flex-direction: column; align-items: center;
+  padding-top: 80px;
+  flex: 1 1 auto;
+  justify-content: flex-end;
+  /* Match original visual: footer strip ~50px + gap so tagline doesn't overlap it. */
+  padding-bottom: 66px;
+  transform: translateY(-10px);
+}
+
+.portraitWrap {
+  position: relative;
+  /*
+   * Two constraints combined with min():
+   *   1. viewport-width-based: clamp(220px, 26vw, 360px)  — normal sizing
+   *   2. viewport-height-based: (100svh - 248px) * 3/4.6  — caps portrait height so the
+   *      head never climbs into the navbar. 248px ≈ padding-top(80) + padding-bottom(66) +
+   *      nameblock(82) + safety margin(20). Multiplying by 3/4.6 converts max-height→width.
+   */
+  width: min(clamp(220px, 26vw, 360px), calc((100svh - 248px) * 3 / 4.6));
+  margin-bottom: -124px;
+  z-index: 2;
+  will-change: transform;
+}
+
+.portrait {
+  position: relative;
+  aspect-ratio: 3/4.6;
+  overflow: visible;
+}
+
+.portraitImg {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: contain;
+  object-position: bottom center;
+  filter: drop-shadow(0 30px 60px rgba(60, 40, 20, 0.18));
+}
+
+.portrait::after {
+  content: '';
+  position: absolute; left: -8%; right: -8%; bottom: -2px; height: 42%;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    color-mix(in oklab, var(--bg) 22%, transparent) 32%,
+    color-mix(in oklab, var(--bg) 55%, transparent) 54%,
+    color-mix(in oklab, var(--bg) 82%, color-mix(in oklab, var(--accent) 12%, var(--bg)) 18%) 76%,
+    color-mix(in oklab, var(--bg) 94%, color-mix(in oklab, var(--accent) 6%, var(--bg)) 6%) 92%,
+    var(--bg) 100%
+  );
+  pointer-events: none;
+  z-index: 2;
+}
+
+.label {
+  position: absolute; bottom: 18px; left: -28px;
+  font-family: var(--mono); font-size: 9px; letter-spacing: 0.2em;
+  color: var(--fg-muted); text-transform: uppercase;
+  z-index: 3;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+}
+
+.nameblock {
+  position: relative;
+  width: 100%;
+  z-index: 4;
+  text-align: center;
+  margin-top: -42px;
+}
+
+.nameblock h1 {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: clamp(72px, 14vw, 240px);
+  line-height: 0.86;
+  letter-spacing: -0.045em;
+  color: var(--fg);
+  margin: 0;
+  white-space: nowrap;
+  mix-blend-mode: multiply;
+  font-variation-settings: 'opsz' 144;
+  font-optical-sizing: auto;
+}
+
+.nameblock h1 em {
+  font-style: italic;
+  color: var(--accent);
+  font-variation-settings: 'opsz' 144;
+}
+
+.subtitleWrap {
+  margin-top: 20px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.tagline {
+  margin-top: 13px;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: clamp(18px, 2vw, 22px);
+  color: var(--fg-dim);
+  letter-spacing: -0.01em;
+}
+
+.meta {
+  font-family: var(--mono); font-size: 11px;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--fg-dim);
+  display: flex; align-items: center; gap: 10px;
+}
+
+.heroFoot .meta {
+  position: relative;
+  z-index: 5;
+}
+
+.metaBr {
+  max-width: min(52vw, 320px);
+  justify-content: flex-end;
+  text-align: right;
+}
+
+.heroFoot {
+  /* Always glued to the bottom of the hero — never pushed by content above. */
+  position: absolute;
+  bottom: 0; left: 40px; right: 40px;
+  z-index: 5;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(12px, 3vw, 28px);
+  padding-bottom: calc(32px + env(safe-area-inset-bottom, 0px));
+  padding-top: 2px;
+}
+
+.heroFoot .metaBl { justify-self: start; }
+.heroFoot .metaBr { justify-self: end; }
+
+.dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+
+.globe {
+  width: 12px; height: 12px; border-radius: 50%;
+  border: 1px solid var(--fg-dim);
+  background:
+    linear-gradient(90deg, transparent 49%, var(--fg-dim) 49% 51%, transparent 51%),
+    linear-gradient(0deg, transparent 49%, var(--fg-dim) 49% 51%, transparent 51%);
+}
+
+.scroll {
+  justify-self: center;
+  font-family: var(--mono); font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--fg-dim);
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+}
+
+.heroFoot .scroll {
+  margin-top: 0;
+}
+
+.scrollLine {
+  width: 1px;
+  height: 22px;
+  flex-shrink: 0;
+  background: linear-gradient(to bottom, var(--fg-dim), transparent);
+  animation: scroll-pulse 2.2s ease-in-out infinite;
+  transform-origin: top;
+}
+
+@keyframes scroll-pulse {
+  0%, 100% { transform: scaleY(0.3); opacity: 0.4; }
+  50% { transform: scaleY(1); opacity: 1; }
+}
+
+@media (max-width: 900px) {
+  .hero { padding: 0 20px 0; height: 100vh; height: 100svh; }
+  .sunWrap { width: min(96vw, 460px); top: 51%; opacity: 0.7; }
+  .nameblock h1 { font-size: clamp(48px, 16vw, 96px); white-space: normal; line-height: 0.92; }
+  .nameblock h1 em { display: block; }
+  .portraitWrap { width: min(64vw, max(180px, calc((100svh - 248px) * 3 / 4.6))); max-width: 320px; margin-bottom: -64px; }
+  .stage {
+    padding-top: 74px;
+    transform: translateY(-8px);
+    padding-bottom: 66px;
+  }
+  .nameblock { margin-top: -30px; }
+  .subtitleWrap { margin-top: 16px; }
+  .tagline { font-size: 14px; max-width: 32ch; }
+  .meta { font-size: 9px; letter-spacing: .14em; }
+  .heroFoot {
+    left: 20px; right: 20px;
+    gap: 10px;
+    padding-bottom: calc(28px + env(safe-area-inset-bottom, 0px));
+  }
+  .metaBr { max-width: min(56vw, 220px); }
+  .scroll { font-size: 9px; gap: 8px; }
+  .scrollLine { height: 18px; max-height: 22px; }
+}
+
+@media (max-width: 480px) {
+  .nameblock h1 { font-size: clamp(42px, 16vw, 76px); }
+  .portraitWrap { width: 70vw; }
+  .heroFoot {
+    grid-template-columns: 1fr auto;
+    grid-template-rows: auto auto;
+    justify-items: stretch;
+    row-gap: 14px;
+  }
+  .metaBl { grid-column: 1; justify-self: start; }
+  .scroll {
+    grid-column: 2;
+    justify-self: end;
+    align-self: center;
+  }
+  .metaBr {
+    display: none;
+  }
+}

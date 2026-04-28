@@ -1,0 +1,28 @@
+.root {
+  position: fixed; inset: 0; z-index: 5000;
+  background: #2C2825; color: #FAF7F3;
+  font-family: var(--mono); font-size: 14px; padding: 28px;
+  overflow: auto;
+}
+
+.art { color: #A0785A; white-space: pre; line-height: 1.15; }
+.prompt { color: #A0785A; }
+.muted { color: #7C756B; }
+.root b { color: #C67D5B; font-weight: normal; }
+
+.output { margin: 6px 0 14px; white-space: pre-wrap; }
+
+.root input {
+  background: transparent; border: 0; color: #FAF7F3;
+  font: inherit; outline: none; width: 80%;
+  caret-color: #C67D5B;
+}
+
+.promptLine {
+  display: flex; gap: 8px; align-items: center; margin-top: 8px;
+}
+.promptLine::after {
+  content: '▍'; color: #C67D5B; animation: cursor-blink 1s steps(2) infinite;
+}
+
+@keyframes cursor-blink { 50% { opacity: 0; } }
