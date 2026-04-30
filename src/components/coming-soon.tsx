@@ -67,7 +67,7 @@ export default function ComingSoon() {
               Discuss a project
               <span aria-hidden="true">-&gt;</span>
             </a>
-            <a href="https://www.linkedin.com/in/fatanaminullah" data-cursor="link">
+            <a href="https://www.linkedin.com/in/fatan-aminullah/" data-cursor="link">
               LinkedIn
             </a>
           </div>
