@@ -67,6 +67,13 @@ export default function ComingSoon() {
               Discuss a project
               <span aria-hidden="true">-&gt;</span>
             </a>
+            <a
+              href="/cv-fatan-aminullah.pdf"
+              download="CV Fatan Aminullah.pdf"
+              data-cursor="link"
+            >
+              Download CV
+            </a>
             <a href="https://www.linkedin.com/in/fatan-aminullah/" data-cursor="link">
               LinkedIn
             </a>
